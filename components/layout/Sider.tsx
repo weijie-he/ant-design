@@ -1,14 +1,15 @@
+import * as React from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import BarsOutlined from '@ant-design/icons/BarsOutlined';
 import LeftOutlined from '@ant-design/icons/LeftOutlined';
 import RightOutlined from '@ant-design/icons/RightOutlined';
 import classNames from 'classnames';
 import omit from 'rc-util/lib/omit';
-import * as React from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
 
 import isNumeric from '../_util/isNumeric';
 import { ConfigContext } from '../config-provider';
-import { LayoutContext } from './layout';
+import { LayoutContext } from './context';
+import useStyle from './style/sider';
 
 const dimensionMaxMap = {
   xs: '479.98px',
@@ -52,7 +53,7 @@ export interface SiderState {
 
 const generateId = (() => {
   let i = 0;
-  return (prefix: string = '') => {
+  return (prefix = '') => {
     i += 1;
     return `${prefix}${i}`;
   };
@@ -97,8 +98,14 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
     onCollapse?.(value, type);
   };
 
+  // =========================== Prefix ===========================
+  const { getPrefixCls, direction } = useContext(ConfigContext);
+  const prefixCls = getPrefixCls('layout-sider', customizePrefixCls);
+
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
+
   // ========================= Responsive =========================
-  const responsiveHandlerRef = useRef<(mql: MediaQueryListEvent | MediaQueryList) => void>();
+  const responsiveHandlerRef = useRef<(mql: MediaQueryListEvent | MediaQueryList) => void>(null);
   responsiveHandlerRef.current = (mql: MediaQueryListEvent | MediaQueryList) => {
     setBelow(mql.matches);
     onBreakpoint?.(mql.matches);
@@ -117,10 +124,10 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
     if (typeof window !== 'undefined') {
       const { matchMedia } = window;
       if (matchMedia! && breakpoint && breakpoint in dimensionMaxMap) {
-        mql = matchMedia(`(max-width: ${dimensionMaxMap[breakpoint]})`);
+        mql = matchMedia(`screen and (max-width: ${dimensionMaxMap[breakpoint]})`);
         try {
           mql.addEventListener('change', responsiveHandler);
-        } catch (error) {
+        } catch {
           mql.addListener(responsiveHandler);
         }
         responsiveHandler(mql);
@@ -129,7 +136,7 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
     return () => {
       try {
         mql?.removeEventListener('change', responsiveHandler);
-      } catch (error) {
+      } catch {
         mql?.removeListener(responsiveHandler);
       }
     };
@@ -145,10 +152,7 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
     handleSetCollapsed(!collapsed, 'clickTrigger');
   };
 
-  const { getPrefixCls } = useContext(ConfigContext);
-
   const renderSider = () => {
-    const prefixCls = getPrefixCls('layout-sider', customizePrefixCls);
     const divProps = omit(otherProps, ['collapsed']);
     const rawWidth = collapsed ? collapsedWidth : width;
     // use "px" as fallback unit for width
@@ -167,9 +171,10 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
           {trigger || <BarsOutlined />}
         </span>
       ) : null;
+    const reverseIcon = (direction === 'rtl') === !reverseArrow;
     const iconObj = {
-      expanded: reverseArrow ? <RightOutlined /> : <LeftOutlined />,
-      collapsed: reverseArrow ? <LeftOutlined /> : <RightOutlined />,
+      expanded: reverseIcon ? <RightOutlined /> : <LeftOutlined />,
+      collapsed: reverseIcon ? <LeftOutlined /> : <RightOutlined />,
     };
     const status = collapsed ? 'collapsed' : 'expanded';
     const defaultTrigger = iconObj[status];
@@ -200,6 +205,8 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
         [`${prefixCls}-zero-width`]: parseFloat(siderWidth) === 0,
       },
       className,
+      hashId,
+      cssVarCls,
     );
     return (
       <aside className={siderCls} {...divProps} style={divStyle} ref={ref}>
@@ -211,7 +218,9 @@ const Sider = React.forwardRef<HTMLDivElement, SiderProps>((props, ref) => {
 
   const contextValue = React.useMemo(() => ({ siderCollapsed: collapsed }), [collapsed]);
 
-  return <SiderContext.Provider value={contextValue}>{renderSider()}</SiderContext.Provider>;
+  return wrapCSSVar(
+    <SiderContext.Provider value={contextValue}>{renderSider()}</SiderContext.Provider>,
+  );
 });
 
 if (process.env.NODE_ENV !== 'production') {

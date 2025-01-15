@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ConfigProvider, theme } from 'antd';
 import { createStyles, css } from 'antd-style';
 
 import useDark from '../../hooks/useDark';
 import useLocale from '../../hooks/useLocale';
-// import BannerRecommends, { BannerRecommendsFallback } from './components/BannerRecommends';
-import ComponentsList from './components/ComponentsList';
-import DesignFramework from './components/DesignFramework';
+import BannerRecommends from './components/BannerRecommends';
 import Group from './components/Group';
 import PreviewBanner from './components/PreviewBanner';
-import Theme from './components/Theme';
+
+const ComponentsList = React.lazy(() => import('./components/ComponentsList'));
+const DesignFramework = React.lazy(() => import('./components/DesignFramework'));
+const Theme = React.lazy(() => import('./components/Theme'));
 
 const useStyle = createStyles(() => ({
   image: css`
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: -50px;
     height: 160px;
   `,
@@ -45,10 +46,7 @@ const Homepage: React.FC = () => {
   return (
     <section>
       <PreviewBanner>
-        {/* 文档很久没更新了，先藏起来 */}
-        {/* <Suspense fallback={<BannerRecommendsFallback />}>
-          <BannerRecommends />
-        </Suspense> */}
+        <BannerRecommends />
       </PreviewBanner>
 
       <div>
@@ -58,7 +56,9 @@ const Homepage: React.FC = () => {
             algorithm: theme.defaultAlgorithm,
           }}
         >
-          <Theme />
+          <Suspense fallback={null}>
+            <Theme />
+          </Suspense>
         </ConfigProvider>
 
         {/* 组件列表 */}
@@ -69,23 +69,28 @@ const Homepage: React.FC = () => {
           description={locale.assetsDesc}
           id="design"
         >
-          <ComponentsList />
+          <Suspense fallback={null}>
+            <ComponentsList />
+          </Suspense>
         </Group>
 
         {/* 设计语言 */}
         <Group
           title={locale.designTitle}
           description={locale.designDesc}
-          background={isRootDark ? 'rgb(57, 63, 74)' : '#F5F8FF'}
+          background={isRootDark ? '#393F4A' : '#F5F8FF'}
           decoration={
             <img
+              draggable={false}
               className={styles.image}
               src="https://gw.alipayobjects.com/zos/bmw-prod/ba37a413-28e6-4be4-b1c5-01be1a0ebb1c.svg"
-              alt=""
+              alt="bg"
             />
           }
         >
-          <DesignFramework />
+          <Suspense fallback={null}>
+            <DesignFramework />
+          </Suspense>
         </Group>
       </div>
     </section>

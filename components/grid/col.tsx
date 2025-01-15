@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 
+import type { Breakpoint } from '../_util/responsiveObserver';
 import type { LiteralUnion } from '../_util/type';
 import { ConfigContext } from '../config-provider';
 import RowContext from './RowContext';
@@ -20,19 +21,15 @@ export interface ColSize {
   pull?: ColSpanType;
 }
 
-export interface ColProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ColProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    Partial<Record<Breakpoint, ColSpanType | ColSize>> {
   flex?: FlexType;
   span?: ColSpanType;
   order?: ColSpanType;
   offset?: ColSpanType;
   push?: ColSpanType;
   pull?: ColSpanType;
-  xs?: ColSpanType | ColSize;
-  sm?: ColSpanType | ColSize;
-  md?: ColSpanType | ColSize;
-  lg?: ColSpanType | ColSize;
-  xl?: ColSpanType | ColSize;
-  xxl?: ColSpanType | ColSize;
   prefixCls?: string;
 }
 
@@ -67,9 +64,13 @@ const Col = React.forwardRef<HTMLDivElement, ColProps>((props, ref) => {
   } = props;
 
   const prefixCls = getPrefixCls('col', customizePrefixCls);
-  const [wrapSSR, hashId] = useColStyle(prefixCls);
 
-  let sizeClassObj = {};
+  const [wrapCSSVar, hashId, cssVarCls] = useColStyle(prefixCls);
+
+  // ===================== Size ======================
+  const sizeStyle: Record<string, string> = {};
+
+  let sizeClassObj: Record<string, boolean | ColSpanType> = {};
   sizes.forEach((size) => {
     let sizeProps: ColSize = {};
     const propSize = props[size];
@@ -89,11 +90,17 @@ const Col = React.forwardRef<HTMLDivElement, ColProps>((props, ref) => {
         sizeProps.offset || sizeProps.offset === 0,
       [`${prefixCls}-${size}-push-${sizeProps.push}`]: sizeProps.push || sizeProps.push === 0,
       [`${prefixCls}-${size}-pull-${sizeProps.pull}`]: sizeProps.pull || sizeProps.pull === 0,
-      [`${prefixCls}-${size}-flex-${sizeProps.flex}`]: sizeProps.flex || sizeProps.flex === 'auto',
       [`${prefixCls}-rtl`]: direction === 'rtl',
     };
+
+    // Responsive flex layout
+    if (sizeProps.flex) {
+      sizeClassObj[`${prefixCls}-${size}-flex`] = true;
+      sizeStyle[`--${prefixCls}-${size}-flex`] = parseFlex(sizeProps.flex);
+    }
   });
 
+  // ==================== Normal =====================
   const classes = classNames(
     prefixCls,
     {
@@ -106,6 +113,7 @@ const Col = React.forwardRef<HTMLDivElement, ColProps>((props, ref) => {
     className,
     sizeClassObj,
     hashId,
+    cssVarCls,
   );
 
   const mergedStyle: React.CSSProperties = {};
@@ -126,8 +134,14 @@ const Col = React.forwardRef<HTMLDivElement, ColProps>((props, ref) => {
     }
   }
 
-  return wrapSSR(
-    <div {...others} style={{ ...mergedStyle, ...style }} className={classes} ref={ref}>
+  // ==================== Render =====================
+  return wrapCSSVar(
+    <div
+      {...others}
+      style={{ ...mergedStyle, ...style, ...sizeStyle }}
+      className={classes}
+      ref={ref}
+    >
       {children}
     </div>,
   );
