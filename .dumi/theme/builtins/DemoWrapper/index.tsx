@@ -1,19 +1,31 @@
-import React, { useContext } from 'react';
-import { DumiDemoGrid, FormattedMessage } from 'dumi';
-import { BugFilled, BugOutlined, CodeFilled, CodeOutlined } from '@ant-design/icons';
-import classNames from 'classnames';
-import { Tooltip } from 'antd';
-import DemoContext from '../../slots/DemoContext';
+import React, { Suspense, useContext } from 'react';
+import { BugOutlined, CodeOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { ConfigProvider, Tooltip, Button } from 'antd';
+import { DumiDemoGrid, FormattedMessage, DumiDemo } from 'dumi';
+import { css, Global } from '@emotion/react';
+
 import useLayoutState from '../../../hooks/useLayoutState';
+import useLocale from '../../../hooks/useLocale';
+import DemoContext from '../../slots/DemoContext';
+import DemoFallback from '../Previewer/DemoFallback';
+
+const locales = {
+  cn: {
+    enableCssVar: '启用 CSS 变量',
+    disableCssVar: '禁用 CSS 变量',
+  },
+  en: {
+    enableCssVar: 'Enable CSS Var',
+    disableCssVar: 'Disable CSS Var',
+  },
+};
 
 const DemoWrapper: typeof DumiDemoGrid = ({ items }) => {
   const { showDebug, setShowDebug } = useContext(DemoContext);
+  const [locale] = useLocale(locales);
 
   const [expandAll, setExpandAll] = useLayoutState(false);
-
-  const expandTriggerClass = classNames('code-box-expand-trigger', {
-    'code-box-expand-trigger-active': expandAll,
-  });
+  const [enableCssVar, setEnableCssVar] = useLayoutState(true);
 
   const handleVisibleToggle = () => {
     setShowDebug?.(!showDebug);
@@ -23,14 +35,18 @@ const DemoWrapper: typeof DumiDemoGrid = ({ items }) => {
     setExpandAll(!expandAll);
   };
 
+  const handleCssVarToggle = () => {
+    setEnableCssVar((v) => !v);
+  };
+
   const demos = React.useMemo(
     () =>
-      items.reduce((acc, item) => {
+      items.reduce<typeof items>((acc, item) => {
         const { previewerProps } = item;
         const { debug } = previewerProps;
-
-        if (debug && !showDebug) return acc;
-
+        if (debug && !showDebug) {
+          return acc;
+        }
         return acc.concat({
           ...item,
           previewerProps: {
@@ -45,37 +61,66 @@ const DemoWrapper: typeof DumiDemoGrid = ({ items }) => {
             originDebug: debug,
           },
         });
-      }, [] as typeof items),
+      }, []),
     [expandAll, showDebug],
   );
 
   return (
     <div className="demo-wrapper">
+      <Global
+        styles={css`
+          :root {
+            --antd-site-api-deprecated-display: ${showDebug ? 'table-row' : 'none'};
+          }
+        `}
+      />
       <span className="all-code-box-controls">
         <Tooltip
           title={
             <FormattedMessage id={`app.component.examples.${expandAll ? 'collapse' : 'expand'}`} />
           }
         >
-          {expandAll ? (
-            <CodeFilled className={expandTriggerClass} onClick={handleExpandToggle} />
-          ) : (
-            <CodeOutlined className={expandTriggerClass} onClick={handleExpandToggle} />
-          )}
+          <Button
+            type="text"
+            size="small"
+            icon={<CodeOutlined />}
+            onClick={handleExpandToggle}
+            className={expandAll ? 'icon-enabled' : ''}
+          />
         </Tooltip>
         <Tooltip
           title={
             <FormattedMessage id={`app.component.examples.${showDebug ? 'hide' : 'visible'}`} />
           }
         >
-          {showDebug ? (
-            <BugFilled className={expandTriggerClass} onClick={handleVisibleToggle} />
-          ) : (
-            <BugOutlined className={expandTriggerClass} onClick={handleVisibleToggle} />
-          )}
+          <Button
+            type="text"
+            size="small"
+            icon={<BugOutlined />}
+            onClick={handleVisibleToggle}
+            className={showDebug ? 'icon-enabled' : ''}
+          />
+        </Tooltip>
+        <Tooltip title={enableCssVar ? locale.disableCssVar : locale.enableCssVar}>
+          <Button
+            type="text"
+            size="small"
+            icon={<ExperimentOutlined />}
+            onClick={handleCssVarToggle}
+            className={enableCssVar ? 'icon-enabled' : ''}
+          />
         </Tooltip>
       </span>
-      <DumiDemoGrid items={demos} />
+      <ConfigProvider theme={{ cssVar: enableCssVar, hashed: !enableCssVar }}>
+        <DumiDemoGrid
+          items={demos}
+          demoRender={(item) => (
+            <Suspense key={item.demo.id} fallback={<DemoFallback />}>
+              <DumiDemo {...item} />
+            </Suspense>
+          )}
+        />
+      </ConfigProvider>
     </div>
   );
 };

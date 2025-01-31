@@ -1,14 +1,27 @@
-import { spyElementPrototype } from 'rc-util/lib/test/domHook';
 import React from 'react';
+import { spyElementPrototype } from 'rc-util/lib/test/domHook';
+
 import Popconfirm from '..';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
 import { act, fireEvent, render, waitFakeTimer } from '../../../tests/utils';
 import Button from '../../button';
 
+// TODO: Remove this. Mock for React 19
+jest.mock('react-dom', () => {
+  const realReactDOM = jest.requireActual('react-dom');
+
+  if (realReactDOM.version.startsWith('19')) {
+    const realReactDOMClient = jest.requireActual('react-dom/client');
+    realReactDOM.createRoot = realReactDOMClient.createRoot;
+  }
+
+  return realReactDOM;
+});
+
 describe('Popconfirm', () => {
-  mountTest(Popconfirm);
-  rtlTest(Popconfirm);
+  mountTest(() => <Popconfirm title="test" />);
+  rtlTest(() => <Popconfirm title="test" />);
 
   const eventObject = expect.objectContaining({
     target: expect.anything(),
@@ -118,6 +131,38 @@ describe('Popconfirm', () => {
 
     popconfirm.rerender(
       <Popconfirm title="code" open={false}>
+        <span>show me your code</span>
+      </Popconfirm>,
+    );
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(popconfirm.container.querySelector('.ant-popover')).not.toBe(null);
+    jest.useRealTimers();
+  });
+
+  it('should be controlled by visible', () => {
+    jest.useFakeTimers();
+    const popconfirm = render(
+      <Popconfirm title="code">
+        <span>show me your code</span>
+      </Popconfirm>,
+    );
+
+    expect(popconfirm.container.querySelector('.ant-popover')).toBe(null);
+    popconfirm.rerender(
+      <Popconfirm title="code" visible>
+        <span>show me your code</span>
+      </Popconfirm>,
+    );
+
+    expect(popconfirm.container.querySelector('.ant-popover')).not.toBe(null);
+    expect(popconfirm.container.querySelector('.ant-popover')?.className).not.toContain(
+      'ant-popover-hidden',
+    );
+
+    popconfirm.rerender(
+      <Popconfirm title="code" visible={false}>
         <span>show me your code</span>
       </Popconfirm>,
     );
@@ -321,5 +366,45 @@ describe('Popconfirm', () => {
 
     expect(onOpenChange).toHaveBeenCalledTimes(1);
     expect(onVisibleChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('okText & cancelText could be empty', () => {
+    render(
+      <Popconfirm title="" okText="" cancelText="" open>
+        <span />
+      </Popconfirm>,
+    );
+
+    expect(document.body.querySelectorAll('.ant-btn')[0].textContent).toBe('Cancel');
+    expect(document.body.querySelectorAll('.ant-btn')[1].textContent).toBe('OK');
+  });
+
+  it('should apply custom styles to Popconfirm', () => {
+    const customClassNames = {
+      body: 'custom-body',
+      root: 'custom-root',
+    };
+
+    const customStyles = {
+      body: { color: 'red' },
+      root: { backgroundColor: 'blue' },
+    };
+
+    const { container } = render(
+      <Popconfirm classNames={customClassNames} title="" styles={customStyles} open>
+        <span />
+      </Popconfirm>,
+    );
+
+    const popconfirmElement = container.querySelector('.ant-popconfirm') as HTMLElement;
+    const popconfirmBodyElement = container.querySelector('.ant-popover-inner') as HTMLElement;
+
+    // 验证 classNames
+    expect(popconfirmElement.classList).toContain('custom-root');
+    expect(popconfirmBodyElement.classList).toContain('custom-body');
+
+    // 验证 styles
+    expect(popconfirmElement.style.backgroundColor).toBe('blue');
+    expect(popconfirmBodyElement.style.color).toBe('red');
   });
 });

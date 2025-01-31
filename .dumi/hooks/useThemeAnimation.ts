@@ -68,6 +68,7 @@ const useThemeAnimation = () => {
     if (!(event && typeof document.startViewTransition === 'function')) {
       return;
     }
+    const time = Date.now();
     const x = event.clientX;
     const y = event.clientY;
     const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
@@ -88,7 +89,6 @@ const useThemeAnimation = () => {
       .startViewTransition(async () => {
         // wait for theme change end
         while (colorBgElevated === animateRef.current.colorBgElevated) {
-          // eslint-disable-next-line no-await-in-loop
           await new Promise((resolve) => {
             setTimeout(resolve, 1000 / 60);
           });
@@ -98,6 +98,8 @@ const useThemeAnimation = () => {
         root.classList.add(isDark ? 'light' : 'dark');
       })
       .ready.then(() => {
+        // eslint-disable-next-line no-console
+        console.log(`Theme transition finished in ${Date.now() - time}ms`);
         const clipPath = [
           `circle(0px at ${x}px ${y}px)`,
           `circle(${endRadius}px at ${x}px ${y}px)`,

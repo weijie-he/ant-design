@@ -2,19 +2,18 @@
 category: Components
 group: Other
 title: App
+description: Application wrapper for some global usages.
 cover: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*HJz8SZos2wgAAAAAAAAAAAAADrJ8AQ/original
 coverDark: https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*oC92TK44Ex8AAAAAAAAAAAAADrJ8AQ/original
 demo:
   cols: 2
-tag: New
+tag: 5.1.0
 ---
-
-Application wrapper for some global usages.
 
 ## When To Use
 
 - Provide reset styles based on `.ant-app` element.
-- You could use static methods of `message/notification/Modal` form `useApp` without writing `contextHolder` manually.
+- You could use static methods of `message/notification/Modal` from `useApp` without writing `contextHolder` manually.
 
 ## Examples
 
@@ -29,8 +28,8 @@ Application wrapper for some global usages.
 App provides upstream and downstream method calls through `Context`, because useApp needs to be used as a subcomponent, we recommend encapsulating App at the top level in the application.
 
 ```tsx
-import { App } from 'antd';
 import React from 'react';
+import { App } from 'antd';
 
 const MyPage: React.FC = () => {
   const { message, notification, modal } = App.useApp();
@@ -102,8 +101,9 @@ export { message, modal, notification };
 
 ```tsx
 // sub page
-import { Button, Space } from 'antd';
 import React from 'react';
+import { Button, Space } from 'antd';
+
 import { message } from './store';
 
 export default () => {
@@ -125,13 +125,22 @@ export default () => {
 
 Common props ref：[Common props](/docs/react/common-props)
 
+> This component is available since `antd@5.1.0`.
+
 ### App
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
+| component | Config render element, if `false` will not create DOM node | ComponentType \| false | div | 5.11.0 |
 | message | Global config for Message | [MessageConfig](/components/message/#messageconfig) | - | 5.3.0 |
 | notification | Global config for Notification | [NotificationConfig](/components/notification/#notificationconfig) | - | 5.3.0 |
 
 ## Design Token
 
 <ComponentTokenTable component="App"></ComponentTokenTable>
+
+## FAQ
+
+### CSS Var doesn't work inside `<App component={false}>`
+
+Make sure the App `component` is a legit React component string, so when you're turning on CSS variables, there's a container to hold the CSS class name.

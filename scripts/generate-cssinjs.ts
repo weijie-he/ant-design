@@ -1,7 +1,7 @@
 import url from 'node:url';
 import path from 'path';
-import { globSync } from 'glob';
 import React from 'react';
+import { globSync } from 'glob';
 
 type StyleFn = (prefix?: string) => void;
 
@@ -25,13 +25,13 @@ export const generateCssinjs = ({ key, beforeRender, render }: GenCssinjsOptions
   Promise.all(
     styleFiles.map(async (file) => {
       const absPath = url.pathToFileURL(file).href;
-      const pathArr = file.split('/');
+      const pathArr = file.split(path.sep);
       const styleIndex = pathArr.lastIndexOf('style');
       const componentName = pathArr[styleIndex - 1];
       let useStyle: StyleFn = () => {};
       if (file.includes('grid')) {
         const { useColStyle, useRowStyle } = await import(absPath);
-        useStyle = (prefixCls: string) => {
+        useStyle = (prefixCls) => {
           useRowStyle(prefixCls);
           useColStyle(prefixCls);
         };

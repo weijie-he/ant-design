@@ -1,8 +1,9 @@
-import type { CSSObject } from '@ant-design/cssinjs';
 import type { CSSProperties } from 'react';
-import type { FullToken, GenerateStyle } from '../../theme/internal';
-import { genComponentStyleHook } from '../../theme/internal';
-import genLayoutLightStyle from './light';
+import { unit } from '@ant-design/cssinjs';
+import type { CSSObject } from '@ant-design/cssinjs';
+
+import type { FullToken, GenerateStyle, GetDefaultToken } from '../../theme/internal';
+import { genStyleHooks } from '../../theme/internal';
 
 export interface ComponentToken {
   /** @deprecated Use headerBg instead */
@@ -26,7 +27,7 @@ export interface ComponentToken {
    * @desc 顶部高度
    * @descEN Height of header
    */
-  headerHeight: number;
+  headerHeight: number | string;
   /**
    * @desc 顶部内边距
    * @descEN Padding of header
@@ -56,7 +57,7 @@ export interface ComponentToken {
    * @desc 侧边栏开关高度
    * @descEN Height of sider trigger
    */
-  triggerHeight: number;
+  triggerHeight: number | string;
   /**
    * @desc 侧边栏开关背景色
    * @descEN Background Color of sider trigger
@@ -101,23 +102,14 @@ const genLayoutStyle: GenerateStyle<LayoutToken, CSSObject> = (token) => {
     antCls, // .ant
     componentCls, // .ant-layout
     colorText,
-    triggerColor,
     footerBg,
-    triggerBg,
     headerHeight,
     headerPadding,
     headerColor,
     footerPadding,
-    triggerHeight,
-    zeroTriggerHeight,
-    zeroTriggerWidth,
-    motionDurationMid,
-    motionDurationSlow,
     fontSize,
-    borderRadius,
     bodyBg,
     headerBg,
-    siderBg,
   } = token;
 
   return {
@@ -146,98 +138,6 @@ const genLayoutStyle: GenerateStyle<LayoutToken, CSSObject> = (token) => {
         flex: '0 0 auto',
       },
 
-      [`${componentCls}-sider`]: {
-        position: 'relative',
-
-        // fix firefox can't set width smaller than content on flex item
-        minWidth: 0,
-        background: siderBg,
-        transition: `all ${motionDurationMid}, background 0s`,
-
-        '&-children': {
-          height: '100%',
-          // Hack for fixing margin collapse bug
-          // https://github.com/ant-design/ant-design/issues/7967
-          // solution from https://stackoverflow.com/a/33132624/3040605
-          marginTop: -0.1,
-          paddingTop: 0.1,
-
-          [`${antCls}-menu${antCls}-menu-inline-collapsed`]: {
-            width: 'auto',
-          },
-        },
-
-        '&-has-trigger': {
-          paddingBottom: triggerHeight,
-        },
-
-        '&-right': {
-          order: 1,
-        },
-
-        '&-trigger': {
-          position: 'fixed',
-          bottom: 0,
-          zIndex: 1,
-          height: triggerHeight,
-          color: triggerColor,
-          lineHeight: `${triggerHeight}px`,
-          textAlign: 'center',
-          background: triggerBg,
-          cursor: 'pointer',
-          transition: `all ${motionDurationMid}`,
-        },
-
-        '&-zero-width': {
-          '> *': {
-            overflow: 'hidden',
-          },
-
-          '&-trigger': {
-            position: 'absolute',
-            top: headerHeight,
-            insetInlineEnd: -zeroTriggerWidth,
-            zIndex: 1,
-            width: zeroTriggerWidth,
-            height: zeroTriggerHeight,
-            color: triggerColor,
-            fontSize: token.fontSizeXL,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: siderBg,
-            borderStartStartRadius: 0,
-            borderStartEndRadius: borderRadius,
-            borderEndEndRadius: borderRadius,
-            borderEndStartRadius: 0,
-
-            cursor: 'pointer',
-            transition: `background ${motionDurationSlow} ease`,
-
-            '&::after': {
-              position: 'absolute',
-              inset: 0,
-              background: 'transparent',
-              transition: `all ${motionDurationSlow}`,
-              content: '""',
-            },
-
-            '&:hover::after': {
-              background: `rgba(255, 255, 255, 0.2)`,
-            },
-
-            '&-right': {
-              insetInlineStart: -zeroTriggerWidth,
-              borderStartStartRadius: borderRadius,
-              borderStartEndRadius: 0,
-              borderEndEndRadius: 0,
-              borderEndStartRadius: borderRadius,
-            },
-          },
-        },
-      },
-      // Light
-      ...genLayoutLightStyle(token),
       // RTL
       '&-rtl': {
         direction: 'rtl',
@@ -249,7 +149,7 @@ const genLayoutStyle: GenerateStyle<LayoutToken, CSSObject> = (token) => {
       height: headerHeight,
       padding: headerPadding,
       color: headerColor,
-      lineHeight: `${headerHeight}px`,
+      lineHeight: unit(headerHeight),
       background: headerBg,
 
       // Other components/menu/style/index.less line:686
@@ -270,6 +170,7 @@ const genLayoutStyle: GenerateStyle<LayoutToken, CSSObject> = (token) => {
     // =================== Content ====================
     [`${componentCls}-content`]: {
       flex: 'auto',
+      color: colorText,
 
       // fix firefox can't set height smaller than content on flex item
       minHeight: 0,
@@ -277,53 +178,52 @@ const genLayoutStyle: GenerateStyle<LayoutToken, CSSObject> = (token) => {
   };
 };
 
+export const prepareComponentToken: GetDefaultToken<'Layout'> = (token) => {
+  const {
+    colorBgLayout,
+    controlHeight,
+    controlHeightLG,
+    colorText,
+    controlHeightSM,
+    marginXXS,
+    colorTextLightSolid,
+    colorBgContainer,
+  } = token;
+
+  const paddingInline = controlHeightLG * 1.25;
+
+  return {
+    // Deprecated
+    colorBgHeader: '#001529',
+    colorBgBody: colorBgLayout,
+    colorBgTrigger: '#002140',
+
+    bodyBg: colorBgLayout,
+    headerBg: '#001529',
+    headerHeight: controlHeight * 2,
+    headerPadding: `0 ${paddingInline}px`,
+    headerColor: colorText,
+    footerPadding: `${controlHeightSM}px ${paddingInline}px`,
+    footerBg: colorBgLayout,
+    siderBg: '#001529',
+    triggerHeight: controlHeightLG + marginXXS * 2,
+    triggerBg: '#002140',
+    triggerColor: colorTextLightSolid,
+    zeroTriggerWidth: controlHeightLG,
+    zeroTriggerHeight: controlHeightLG,
+    lightSiderBg: colorBgContainer,
+    lightTriggerBg: colorBgContainer,
+    lightTriggerColor: colorText,
+  };
+};
+
 // ============================== Export ==============================
-export default genComponentStyleHook(
-  'Layout',
-  (token) => [genLayoutStyle(token)],
-  (token) => {
-    const {
-      colorBgLayout,
-      controlHeight,
-      controlHeightLG,
-      colorText,
-      controlHeightSM,
-      marginXXS,
-      colorTextLightSolid,
-      colorBgContainer,
-    } = token;
+export const DEPRECATED_TOKENS: [keyof ComponentToken, keyof ComponentToken][] = [
+  ['colorBgBody', 'bodyBg'],
+  ['colorBgHeader', 'headerBg'],
+  ['colorBgTrigger', 'triggerBg'],
+];
 
-    const paddingInline = controlHeightLG * 1.25;
-
-    return {
-      // Deprecated
-      colorBgHeader: '#001529',
-      colorBgBody: colorBgLayout,
-      colorBgTrigger: '#002140',
-
-      bodyBg: colorBgLayout,
-      headerBg: '#001529',
-      headerHeight: controlHeight * 2,
-      headerPadding: `0 ${paddingInline}px`,
-      headerColor: colorText,
-      footerPadding: `${controlHeightSM}px ${paddingInline}px`,
-      footerBg: colorBgLayout,
-      siderBg: '#001529',
-      triggerHeight: controlHeightLG + marginXXS * 2,
-      triggerBg: '#002140',
-      triggerColor: colorTextLightSolid,
-      zeroTriggerWidth: controlHeightLG,
-      zeroTriggerHeight: controlHeightLG,
-      lightSiderBg: colorBgContainer,
-      lightTriggerBg: colorBgContainer,
-      lightTriggerColor: colorText,
-    };
-  },
-  {
-    deprecatedTokens: [
-      ['colorBgBody', 'bodyBg'],
-      ['colorBgHeader', 'headerBg'],
-      ['colorBgTrigger', 'triggerBg'],
-    ],
-  },
-);
+export default genStyleHooks('Layout', (token) => [genLayoutStyle(token)], prepareComponentToken, {
+  deprecatedTokens: DEPRECATED_TOKENS,
+});
