@@ -1,11 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders components/tooltip/demo/arrow.tsx extend context correctly 1`] = `
-<div
-  class="demo"
->
+Array [
   <div
+    aria-label="segmented control"
     class="ant-segmented"
+    role="radiogroup"
+    style="margin-bottom: 24px;"
+    tabindex="0"
   >
     <div
       class="ant-segmented-group"
@@ -16,9 +18,11 @@ exports[`renders components/tooltip/demo/arrow.tsx extend context correctly 1`] 
         <input
           checked=""
           class="ant-segmented-item-input"
+          name="test-id"
           type="radio"
         />
         <div
+          aria-selected="true"
           class="ant-segmented-item-label"
           title="Show"
         >
@@ -30,9 +34,11 @@ exports[`renders components/tooltip/demo/arrow.tsx extend context correctly 1`] 
       >
         <input
           class="ant-segmented-item-input"
+          name="test-id"
           type="radio"
         />
         <div
+          aria-selected="false"
           class="ant-segmented-item-label"
           title="Hide"
         >
@@ -44,9 +50,11 @@ exports[`renders components/tooltip/demo/arrow.tsx extend context correctly 1`] 
       >
         <input
           class="ant-segmented-item-input"
+          name="test-id"
           type="radio"
         />
         <div
+          aria-selected="false"
           class="ant-segmented-item-label"
           title="Center"
         >
@@ -54,388 +62,419 @@ exports[`renders components/tooltip/demo/arrow.tsx extend context correctly 1`] 
         </div>
       </label>
     </div>
-  </div>
+  </div>,
   <div
-    class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-center"
-    role="separator"
+    class="demo ant-flex ant-flex-align-center ant-flex-justify-center ant-flex-vertical"
   >
-    <span
-      class="ant-divider-inner-text"
-    >
-      Content
-    </span>
-  </div>
-  <div
-    style="margin-left: 78px; display: flex; flex-wrap: nowrap; column-gap: 8px;"
-  >
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        TL
-      </span>
-    </button>
     <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-topLeft"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      class="ant-flex ant-flex-align-center ant-flex-justify-center"
+      style="white-space: nowrap;"
     >
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          TL
+        </span>
+      </button>
       <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-topLeft"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
       >
         <div
-          class="ant-tooltip-inner"
-          role="tooltip"
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
         >
-          <span>
-            prompt text
-          </span>
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          Top
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute; bottom: 0px; left: 0px;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          TR
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-topRight"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
         </div>
       </div>
     </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        Top
-      </span>
-    </button>
     <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      class="ant-flex ant-flex-align-center ant-flex-justify-space-between"
+      style="width: 432px;"
     >
       <div
-        class="ant-tooltip-arrow"
-        style="position: absolute; bottom: 0px; left: 0px;"
-      />
-      <div
-        class="ant-tooltip-content"
+        class="ant-flex ant-flex-align-center ant-flex-vertical"
       >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
+        <button
+          aria-describedby="test-id"
+          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          style="width: 80px; margin: 4px;"
+          type="button"
         >
           <span>
-            prompt text
+            LT
           </span>
+        </button>
+        <div
+          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftTop"
+          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        >
+          <div
+            class="ant-tooltip-arrow"
+            style="position: absolute;"
+          />
+          <div
+            class="ant-tooltip-content"
+          >
+            <div
+              class="ant-tooltip-inner"
+              id="test-id"
+              role="tooltip"
+            >
+              <span>
+                prompt text
+              </span>
+            </div>
+          </div>
+        </div>
+        <button
+          aria-describedby="test-id"
+          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          style="width: 80px; margin: 4px;"
+          type="button"
+        >
+          <span>
+            Left
+          </span>
+        </button>
+        <div
+          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-left"
+          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        >
+          <div
+            class="ant-tooltip-arrow"
+            style="position: absolute; top: 0px; right: 0px;"
+          />
+          <div
+            class="ant-tooltip-content"
+          >
+            <div
+              class="ant-tooltip-inner"
+              id="test-id"
+              role="tooltip"
+            >
+              <span>
+                prompt text
+              </span>
+            </div>
+          </div>
+        </div>
+        <button
+          aria-describedby="test-id"
+          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          style="width: 80px; margin: 4px;"
+          type="button"
+        >
+          <span>
+            LB
+          </span>
+        </button>
+        <div
+          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftBottom"
+          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        >
+          <div
+            class="ant-tooltip-arrow"
+            style="position: absolute;"
+          />
+          <div
+            class="ant-tooltip-content"
+          >
+            <div
+              class="ant-tooltip-inner"
+              id="test-id"
+              role="tooltip"
+            >
+              <span>
+                prompt text
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-flex ant-flex-align-center ant-flex-vertical"
+      >
+        <button
+          aria-describedby="test-id"
+          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          style="width: 80px; margin: 4px;"
+          type="button"
+        >
+          <span>
+            RT
+          </span>
+        </button>
+        <div
+          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightTop"
+          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        >
+          <div
+            class="ant-tooltip-arrow"
+            style="position: absolute;"
+          />
+          <div
+            class="ant-tooltip-content"
+          >
+            <div
+              class="ant-tooltip-inner"
+              id="test-id"
+              role="tooltip"
+            >
+              <span>
+                prompt text
+              </span>
+            </div>
+          </div>
+        </div>
+        <button
+          aria-describedby="test-id"
+          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          style="width: 80px; margin: 4px;"
+          type="button"
+        >
+          <span>
+            Right
+          </span>
+        </button>
+        <div
+          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-right"
+          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        >
+          <div
+            class="ant-tooltip-arrow"
+            style="position: absolute; top: 0px; left: 0px;"
+          />
+          <div
+            class="ant-tooltip-content"
+          >
+            <div
+              class="ant-tooltip-inner"
+              id="test-id"
+              role="tooltip"
+            >
+              <span>
+                prompt text
+              </span>
+            </div>
+          </div>
+        </div>
+        <button
+          aria-describedby="test-id"
+          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          style="width: 80px; margin: 4px;"
+          type="button"
+        >
+          <span>
+            RB
+          </span>
+        </button>
+        <div
+          class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightBottom"
+          style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        >
+          <div
+            class="ant-tooltip-arrow"
+            style="position: absolute;"
+          />
+          <div
+            class="ant-tooltip-content"
+          >
+            <div
+              class="ant-tooltip-inner"
+              id="test-id"
+              role="tooltip"
+            >
+              <span>
+                prompt text
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        TR
-      </span>
-    </button>
     <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-topRight"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      class="ant-flex ant-flex-align-center ant-flex-justify-center"
+      style="white-space: nowrap;"
     >
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          BL
+        </span>
+      </button>
       <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-bottomLeft"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
       >
         <div
-          class="ant-tooltip-inner"
-          role="tooltip"
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
         >
-          <span>
-            prompt text
-          </span>
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          Bottom
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-bottom"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute; top: 0px; left: 0px;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          BR
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-bottomRight"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    style="width: 78px; float: left; display: flex; flex-direction: column; row-gap: 8px;"
-  >
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        LT
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftTop"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        Left
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-left"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute; top: 0px; right: 0px;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        LB
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftBottom"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    style="width: 78px; margin-left: 336px; display: flex; flex-direction: column; row-gap: 8px;"
-  >
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        RT
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightTop"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        Right
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-right"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute; top: 0px; left: 0px;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        RB
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightBottom"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    style="margin-left: 78px; clear: both; display: flex; flex-wrap: nowrap; column-gap: 8px;"
-  >
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        BL
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-bottomLeft"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        Bottom
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-bottom"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute; top: 0px; left: 0px;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        BR
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-bottomRight"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  </div>,
+]
 `;
 
 exports[`renders components/tooltip/demo/arrow.tsx extend context correctly 2`] = `[]`;
@@ -448,7 +487,8 @@ exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend contex
     class="ant-space-item"
   >
     <button
-      class="ant-btn ant-btn-default"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
       type="button"
     >
       <span>
@@ -468,6 +508,7 @@ exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend contex
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           Prompt Text
@@ -479,7 +520,8 @@ exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend contex
     class="ant-space-item"
   >
     <button
-      class="ant-btn ant-btn-default"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
       type="button"
     >
       <span>
@@ -499,6 +541,7 @@ exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend contex
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           Prompt Text
@@ -509,11 +552,7 @@ exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend contex
 </div>
 `;
 
-exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend context correctly 2`] = `
-[
-  "Warning: [antd: Tooltip] \`arrowPointAtCenter\` is deprecated. Please use \`arrow={{ pointAtCenter: true }}\` instead.",
-]
-`;
+exports[`renders components/tooltip/demo/arrow-point-at-center.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context correctly 1`] = `
 <div
@@ -531,7 +570,8 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
       style="width: 200%; display: flex; flex-direction: column; align-items: center; row-gap: 16px;"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -551,6 +591,7 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             Prompt Text
@@ -558,7 +599,8 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -578,6 +620,7 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             Prompt Text
@@ -598,7 +641,8 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
       style="width: 200%; display: flex; flex-direction: column; align-items: center; row-gap: 16px;"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -618,6 +662,7 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             Prompt Text
@@ -625,7 +670,8 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -645,6 +691,7 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             Prompt Text
@@ -660,7 +707,9 @@ exports[`renders components/tooltip/demo/auto-adjust-overflow.tsx extend context
 
 exports[`renders components/tooltip/demo/basic.tsx extend context correctly 1`] = `
 Array [
-  <span>
+  <span
+    aria-describedby="test-id"
+  >
     Tooltip will show on mouse enter.
   </span>,
   <div
@@ -676,6 +725,7 @@ Array [
     >
       <div
         class="ant-tooltip-inner"
+        id="test-id"
         role="tooltip"
       >
         prompt text
@@ -690,7 +740,7 @@ exports[`renders components/tooltip/demo/basic.tsx extend context correctly 2`] 
 exports[`renders components/tooltip/demo/colorful.tsx extend context correctly 1`] = `
 Array [
   <div
-    class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left"
+    class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-start"
     role="separator"
   >
     <span
@@ -707,7 +757,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -727,6 +778,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -738,7 +790,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -758,6 +811,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -769,7 +823,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -789,6 +844,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -800,7 +856,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -820,6 +877,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -831,7 +889,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -851,6 +910,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -862,7 +922,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -882,6 +943,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -893,7 +955,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -913,6 +976,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -924,7 +988,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -944,6 +1009,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -955,7 +1021,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -975,6 +1042,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -986,7 +1054,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1006,6 +1075,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -1017,7 +1087,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1037,6 +1108,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -1048,7 +1120,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1068,6 +1141,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -1079,7 +1153,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1099,6 +1174,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
           >
             prompt text
@@ -1108,7 +1184,7 @@ Array [
     </div>
   </div>,
   <div
-    class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-left"
+    class="ant-divider ant-divider-horizontal ant-divider-with-text ant-divider-with-text-start"
     role="separator"
   >
     <span
@@ -1125,7 +1201,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1145,6 +1222,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
             style="background: rgb(255, 85, 0);"
           >
@@ -1157,7 +1235,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1177,6 +1256,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
             style="background: rgb(45, 183, 245);"
           >
@@ -1189,7 +1269,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1209,6 +1290,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
             style="background: rgb(135, 208, 104);"
           >
@@ -1221,7 +1303,8 @@ Array [
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-default"
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="button"
       >
         <span>
@@ -1241,6 +1324,7 @@ Array [
         >
           <div
             class="ant-tooltip-inner"
+            id="test-id"
             role="tooltip"
             style="background: rgb(16, 142, 233);"
           >
@@ -1257,7 +1341,9 @@ exports[`renders components/tooltip/demo/colorful.tsx extend context correctly 2
 
 exports[`renders components/tooltip/demo/destroy-tooltip-on-hide.tsx extend context correctly 1`] = `
 Array [
-  <span>
+  <span
+    aria-describedby="test-id"
+  >
     Tooltip will destroy when hidden.
   </span>,
   <div
@@ -1273,6 +1359,7 @@ Array [
     >
       <div
         class="ant-tooltip-inner"
+        id="test-id"
         role="tooltip"
       >
         prompt text
@@ -1292,7 +1379,56 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
     class="ant-space-item"
   >
     <button
-      class="ant-btn ant-btn-default"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      type="button"
+    >
+      <span>
+        Enable
+      </span>
+    </button>
+  </div>
+  <div
+    class="ant-space-item"
+  >
+    <span
+      aria-describedby="test-id"
+    >
+      Tooltip will show on mouse enter.
+    </span>
+    <div
+      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-top"
+      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+    >
+      <div
+        class="ant-tooltip-arrow"
+        style="position: absolute; bottom: 0px; left: 0px;"
+      />
+      <div
+        class="ant-tooltip-content"
+      >
+        <div
+          class="ant-tooltip-inner"
+          id="test-id"
+          role="tooltip"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 2`] = `[]`;
+
+exports[`renders components/tooltip/demo/disabled-children.tsx extend context correctly 1`] = `
+<div
+  class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
+>
+  <div
+    class="ant-space-item"
+  >
+    <button
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
       disabled=""
       type="button"
     >
@@ -1313,9 +1449,10 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
-          Thanks for using antd. Have a nice day!
+          Thanks for using antd. Have a nice day !
         </div>
       </div>
     </div>
@@ -1324,7 +1461,8 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
     class="ant-space-item"
   >
     <input
-      class="ant-input ant-input-disabled"
+      aria-describedby="test-id"
+      class="ant-input ant-input-disabled ant-input-outlined"
       disabled=""
       placeholder="disabled"
       type="text"
@@ -1343,9 +1481,10 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
-          Thanks for using antd. Have a nice day!
+          Thanks for using antd. Have a nice day !
         </div>
       </div>
     </div>
@@ -1354,7 +1493,7 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
     class="ant-space-item"
   >
     <div
-      class="ant-input-number ant-input-number-disabled"
+      class="ant-input-number ant-input-number-outlined ant-input-number-disabled"
     >
       <div
         class="ant-input-number-handler-wrap"
@@ -1418,6 +1557,7 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
         class="ant-input-number-input-wrap"
       >
         <input
+          aria-describedby="test-id"
           autocomplete="off"
           class="ant-input-number-input"
           disabled=""
@@ -1440,9 +1580,10 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
-          Thanks for using antd. Have a nice day!
+          Thanks for using antd. Have a nice day !
         </div>
       </div>
     </div>
@@ -1457,6 +1598,7 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
         class="ant-checkbox ant-wave-target ant-checkbox-disabled"
       >
         <input
+          aria-describedby="test-id"
           class="ant-checkbox-input"
           disabled=""
           type="checkbox"
@@ -1479,9 +1621,10 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
-          Thanks for using antd. Have a nice day!
+          Thanks for using antd. Have a nice day !
         </div>
       </div>
     </div>
@@ -1490,40 +1633,45 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
     class="ant-space-item"
   >
     <div
-      class="ant-select ant-select-single ant-select-show-arrow ant-select-disabled"
+      aria-describedby="test-id"
+      class="ant-select ant-select-outlined ant-select-single ant-select-show-arrow ant-select-disabled"
     >
       <div
         class="ant-select-selector"
       >
         <span
-          class="ant-select-selection-search"
+          class="ant-select-selection-wrap"
         >
-          <input
-            aria-autocomplete="list"
-            aria-controls="rc_select_TEST_OR_SSR_list"
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-label="Search"
-            aria-owns="rc_select_TEST_OR_SSR_list"
-            autocomplete="off"
-            class="ant-select-selection-search-input"
-            disabled=""
-            id="rc_select_TEST_OR_SSR"
-            readonly=""
-            role="combobox"
-            style="opacity: 0;"
-            type="search"
-            unselectable="on"
-            value=""
+          <span
+            class="ant-select-selection-search"
+          >
+            <input
+              aria-autocomplete="list"
+              aria-controls="rc_select_TEST_OR_SSR_list"
+              aria-describedby="test-id"
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-owns="rc_select_TEST_OR_SSR_list"
+              autocomplete="off"
+              class="ant-select-selection-search-input"
+              disabled=""
+              id="rc_select_TEST_OR_SSR"
+              readonly=""
+              role="combobox"
+              style="opacity: 0;"
+              type="search"
+              unselectable="on"
+              value=""
+            />
+          </span>
+          <span
+            class="ant-select-selection-placeholder"
           />
         </span>
-        <span
-          class="ant-select-selection-placeholder"
-        />
       </div>
       <div
         class="ant-select-dropdown ant-slide-up-appear ant-slide-up-appear-prepare ant-slide-up ant-select-dropdown-empty ant-select-dropdown-placement-bottomLeft"
-        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box; z-index: 1150;"
       >
         <div>
           <div
@@ -1543,6 +1691,9 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
                   width="64"
                   xmlns="http://www.w3.org/2000/svg"
                 >
+                  <title>
+                    No data
+                  </title>
                   <g
                     fill="none"
                     fill-rule="evenodd"
@@ -1619,9 +1770,10 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
-          Thanks for using antd. Have a nice day!
+          Thanks for using antd. Have a nice day !
         </div>
       </div>
     </div>
@@ -1629,16 +1781,20 @@ exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 1
 </div>
 `;
 
-exports[`renders components/tooltip/demo/disabled.tsx extend context correctly 2`] = `[]`;
+exports[`renders components/tooltip/demo/disabled-children.tsx extend context correctly 2`] = `[]`;
 
 exports[`renders components/tooltip/demo/placement.tsx extend context correctly 1`] = `
-<div>
+<div
+  class="demo ant-flex ant-flex-align-center ant-flex-justify-center ant-flex-vertical"
+>
   <div
-    style="display: flex; margin-left: 78px; white-space: nowrap; column-gap: 8px;"
+    class="ant-flex ant-flex-align-center ant-flex-justify-center"
+    style="white-space: nowrap;"
   >
     <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      style="width: 80px; margin: 4px;"
       type="button"
     >
       <span>
@@ -1658,6 +1814,7 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           <span>
@@ -1667,8 +1824,9 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       </div>
     </div>
     <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      style="width: 80px; margin: 4px;"
       type="button"
     >
       <span>
@@ -1688,6 +1846,7 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           <span>
@@ -1697,8 +1856,9 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       </div>
     </div>
     <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      style="width: 80px; margin: 4px;"
       type="button"
     >
       <span>
@@ -1718,6 +1878,7 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           <span>
@@ -1728,199 +1889,218 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
     </div>
   </div>
   <div
-    style="display: flex; flex-direction: column; width: 78px; float: left; row-gap: 8px;"
+    class="ant-flex ant-flex-align-center ant-flex-justify-space-between"
+    style="width: 432px;"
   >
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        LT
-      </span>
-    </button>
     <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftTop"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      class="ant-flex ant-flex-align-center ant-flex-vertical"
     >
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          LT
+        </span>
+      </button>
       <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftTop"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
       >
         <div
-          class="ant-tooltip-inner"
-          role="tooltip"
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
         >
-          <span>
-            prompt text
-          </span>
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          Left
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-left"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute; top: 0px; right: 0px;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          LB
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftBottom"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
         </div>
       </div>
     </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        Left
-      </span>
-    </button>
     <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-left"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      class="ant-flex ant-flex-align-center ant-flex-vertical"
     >
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          RT
+        </span>
+      </button>
       <div
-        class="ant-tooltip-arrow"
-        style="position: absolute; top: 0px; right: 0px;"
-      />
-      <div
-        class="ant-tooltip-content"
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightTop"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
       >
         <div
-          class="ant-tooltip-inner"
-          role="tooltip"
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
         >
-          <span>
-            prompt text
-          </span>
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        LB
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-leftBottom"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          Right
+        </span>
+      </button>
       <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-right"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
       >
         <div
-          class="ant-tooltip-inner"
-          role="tooltip"
+          class="ant-tooltip-arrow"
+          style="position: absolute; top: 0px; left: 0px;"
+        />
+        <div
+          class="ant-tooltip-content"
         >
-          <span>
-            prompt text
-          </span>
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
+        </div>
+      </div>
+      <button
+        aria-describedby="test-id"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        style="width: 80px; margin: 4px;"
+        type="button"
+      >
+        <span>
+          RB
+        </span>
+      </button>
+      <div
+        class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightBottom"
+        style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
+      >
+        <div
+          class="ant-tooltip-arrow"
+          style="position: absolute;"
+        />
+        <div
+          class="ant-tooltip-content"
+        >
+          <div
+            class="ant-tooltip-inner"
+            id="test-id"
+            role="tooltip"
+          >
+            <span>
+              prompt text
+            </span>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div
-    style="display: flex; flex-direction: column; width: 78px; margin-left: 336px; row-gap: 8px;"
+    class="ant-flex ant-flex-align-center ant-flex-justify-center"
+    style="white-space: nowrap;"
   >
     <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        RT
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightTop"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        Right
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-right"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute; top: 0px; left: 0px;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
-      type="button"
-    >
-      <span>
-        RB
-      </span>
-    </button>
-    <div
-      class="ant-tooltip ant-zoom-big-fast-appear ant-zoom-big-fast-appear-prepare ant-zoom-big-fast ant-tooltip-placement-rightBottom"
-      style="--arrow-x: 0px; --arrow-y: 0px; left: -1000vw; top: -1000vh; box-sizing: border-box;"
-    >
-      <div
-        class="ant-tooltip-arrow"
-        style="position: absolute;"
-      />
-      <div
-        class="ant-tooltip-content"
-      >
-        <div
-          class="ant-tooltip-inner"
-          role="tooltip"
-        >
-          <span>
-            prompt text
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    style="display: flex; margin-left: 78px; clear: both; white-space: nowrap; column-gap: 8px;"
-  >
-    <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      style="width: 80px; margin: 4px;"
       type="button"
     >
       <span>
@@ -1940,6 +2120,7 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           <span>
@@ -1949,8 +2130,9 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       </div>
     </div>
     <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      style="width: 80px; margin: 4px;"
       type="button"
     >
       <span>
@@ -1970,6 +2152,7 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           <span>
@@ -1979,8 +2162,9 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       </div>
     </div>
     <button
-      class="ant-btn ant-btn-default"
-      style="width: 78px;"
+      aria-describedby="test-id"
+      class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      style="width: 80px; margin: 4px;"
       type="button"
     >
       <span>
@@ -2000,6 +2184,7 @@ exports[`renders components/tooltip/demo/placement.tsx extend context correctly 
       >
         <div
           class="ant-tooltip-inner"
+          id="test-id"
           role="tooltip"
         >
           <span>

@@ -6,8 +6,10 @@ import { composeRef } from 'rc-util/lib/ref';
 import { devUseWarning } from '../_util/warning';
 import Wave from '../_util/wave';
 import { TARGET_CLS } from '../_util/wave/interface';
+import useBubbleLock from '../checkbox/useBubbleLock';
 import { ConfigContext } from '../config-provider';
 import DisabledContext from '../config-provider/DisabledContext';
+import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
 import { FormItemInputContext } from '../form/context';
 import RadioGroupContext, { RadioOptionTypeContext } from './context';
 import type { RadioChangeEvent, RadioProps, RadioRef } from './interface';
@@ -39,6 +41,7 @@ const InternalRadio: React.ForwardRefRenderFunction<RadioRef, RadioProps> = (pro
     rootClassName,
     children,
     style,
+    title,
     ...restProps
   } = props;
   const radioPrefixCls = getPrefixCls('radio', customizePrefixCls);
@@ -47,7 +50,8 @@ const InternalRadio: React.ForwardRefRenderFunction<RadioRef, RadioProps> = (pro
   const prefixCls = isButtonType ? `${radioPrefixCls}-button` : radioPrefixCls;
 
   // Style
-  const [wrapSSR, hashId] = useStyle(radioPrefixCls);
+  const rootCls = useCSSVarCls(radioPrefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(radioPrefixCls, rootCls);
 
   const radioProps: RadioProps = { ...restProps };
 
@@ -69,30 +73,40 @@ const InternalRadio: React.ForwardRefRenderFunction<RadioRef, RadioProps> = (pro
       [`${prefixCls}-wrapper-disabled`]: radioProps.disabled,
       [`${prefixCls}-wrapper-rtl`]: direction === 'rtl',
       [`${prefixCls}-wrapper-in-form-item`]: isFormItemInput,
+      [`${prefixCls}-wrapper-block`]: !!groupContext?.block,
     },
     radio?.className,
     className,
     rootClassName,
     hashId,
+    cssVarCls,
+    rootCls,
   );
 
-  return wrapSSR(
+  // ============================ Event Lock ============================
+  const [onLabelClick, onInputClick] = useBubbleLock(radioProps.onClick);
+
+  // ============================== Render ==============================
+  return wrapCSSVar(
     <Wave component="Radio" disabled={radioProps.disabled}>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
         className={wrapperClassString}
         style={{ ...radio?.style, ...style }}
         onMouseEnter={props.onMouseEnter}
         onMouseLeave={props.onMouseLeave}
+        title={title}
+        onClick={onLabelClick}
       >
+        {/* @ts-ignore */}
         <RcCheckbox
           {...radioProps}
-          className={classNames(radioProps.className, !isButtonType && TARGET_CLS)}
+          className={classNames(radioProps.className, { [TARGET_CLS]: !isButtonType })}
           type="radio"
           prefixCls={prefixCls}
           ref={mergedRef}
+          onClick={onInputClick}
         />
-        {children !== undefined ? <span>{children}</span> : null}
+        {children !== undefined ? <span className={`${prefixCls}-label`}>{children}</span> : null}
       </label>
     </Wave>,
   );

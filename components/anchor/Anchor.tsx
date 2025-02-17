@@ -1,14 +1,15 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { useEvent } from 'rc-util';
+import useEvent from 'rc-util/lib/hooks/useEvent';
 import scrollIntoView from 'scroll-into-view-if-needed';
 
 import getScroll from '../_util/getScroll';
 import scrollTo from '../_util/scrollTo';
 import { devUseWarning } from '../_util/warning';
 import Affix from '../affix';
-import type { ConfigConsumerProps } from '../config-provider';
-import { ConfigContext } from '../config-provider';
+import type { AffixProps } from '../affix';
+import { ConfigContext, useComponentConfig } from '../config-provider/context';
+import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
 import type { AnchorLinkBaseProps } from './AnchorLink';
 import AnchorLink from './AnchorLink';
 import AnchorContext from './context';
@@ -34,8 +35,7 @@ function getOffsetTop(element: HTMLElement, container: AnchorContainer): number 
 
   if (rect.width || rect.height) {
     if (container === window) {
-      container = element.ownerDocument!.documentElement!;
-      return rect.top - container.clientTop;
+      return rect.top - element.ownerDocument!.documentElement!.clientTop;
     }
     return rect.top - (container as HTMLElement).getBoundingClientRect().top;
   }
@@ -61,7 +61,7 @@ export interface AnchorProps {
   children?: React.ReactNode;
   offsetTop?: number;
   bounds?: number;
-  affix?: boolean;
+  affix?: boolean | Omit<AffixProps, 'offsetTop' | 'target' | 'children'>;
   showInkInFixed?: boolean;
   getContainer?: () => AnchorContainer;
   /** Return customize highlight anchor */
@@ -77,11 +77,6 @@ export interface AnchorProps {
   items?: AnchorLinkItemProps[];
   direction?: AnchorDirection;
   replace?: boolean;
-}
-
-interface InternalAnchorProps extends AnchorProps {
-  anchorPrefixCls: string;
-  rootClassName: string;
 }
 
 export interface AnchorState {
@@ -109,10 +104,10 @@ export interface AntAnchor {
   direction: AnchorDirection;
 }
 
-const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
+const Anchor: React.FC<AnchorProps> = (props) => {
   const {
     rootClassName,
-    anchorPrefixCls: prefixCls,
+    prefixCls: customPrefixCls,
     className,
     style,
     offsetTop,
@@ -151,8 +146,19 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
   const spanLinkNode = React.useRef<HTMLSpanElement>(null);
   const animating = React.useRef<boolean>(false);
 
-  const { direction, getTargetContainer, anchor } =
-    React.useContext<ConfigConsumerProps>(ConfigContext);
+  const {
+    direction,
+    getPrefixCls,
+    className: anchorClassName,
+    style: anchorStyle,
+  } = useComponentConfig('anchor');
+
+  const { getTargetContainer } = React.useContext(ConfigContext);
+
+  const prefixCls = getPrefixCls('anchor', customPrefixCls);
+
+  const rootCls = useCSSVarCls(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
 
   const getCurrentContainer = getContainer ?? getTargetContainer ?? getDefaultContainer;
 
@@ -182,10 +188,7 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
       inkStyle.left = horizontalAnchor ? `${linkNode.offsetLeft}px` : '';
       inkStyle.width = horizontalAnchor ? `${linkNode.clientWidth}px` : '';
       if (horizontalAnchor) {
-        scrollIntoView(linkNode, {
-          scrollMode: 'if-needed',
-          block: 'nearest',
-        });
+        scrollIntoView(linkNode, { scrollMode: 'if-needed', block: 'nearest' });
       }
     }
   };
@@ -201,7 +204,7 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
       const target = document.getElementById(sharpLinkMatch[1]);
       if (target) {
         const top = getOffsetTop(target, container);
-        if (top < _offsetTop + _bounds) {
+        if (top <= _offsetTop + _bounds) {
           linkSections.push({ link, top });
         }
       }
@@ -258,7 +261,7 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
       }
 
       const container = getCurrentContainer();
-      const scrollTop = getScroll(container, true);
+      const scrollTop = getScroll(container);
       const eleOffsetTop = getOffsetTop(targetElement, container);
       let y = scrollTop + eleOffsetTop;
       y -= targetOffset !== undefined ? targetOffset : offsetTop || 0;
@@ -274,6 +277,9 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
   );
 
   const wrapperClass = classNames(
+    hashId,
+    cssVarCls,
+    rootCls,
     rootClassName,
     `${prefixCls}-wrapper`,
     {
@@ -281,7 +287,7 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
       [`${prefixCls}-rtl`]: direction === 'rtl',
     },
     className,
-    anchor?.className,
+    anchorClassName,
   );
 
   const anchorClass = classNames(prefixCls, {
@@ -294,7 +300,7 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
 
   const wrapperStyle: React.CSSProperties = {
     maxHeight: offsetTop ? `calc(100vh - ${offsetTop}px)` : '100vh',
-    ...anchor?.style,
+    ...anchorStyle,
     ...style,
   };
 
@@ -347,32 +353,18 @@ const AnchorContent: React.FC<InternalAnchorProps> = (props) => {
     [activeLink, onClick, handleScrollTo, anchorDirection],
   );
 
-  return (
+  const affixProps = affix && typeof affix === 'object' ? affix : undefined;
+
+  return wrapCSSVar(
     <AnchorContext.Provider value={memoizedContextValue}>
       {affix ? (
-        <Affix offsetTop={offsetTop} target={getCurrentContainer}>
+        <Affix offsetTop={offsetTop} target={getCurrentContainer} {...affixProps}>
           {anchorContent}
         </Affix>
       ) : (
         anchorContent
       )}
-    </AnchorContext.Provider>
-  );
-};
-
-const Anchor: React.FC<AnchorProps> = (props) => {
-  const { prefixCls: customizePrefixCls, rootClassName } = props;
-  const { getPrefixCls } = React.useContext<ConfigConsumerProps>(ConfigContext);
-  const anchorPrefixCls = getPrefixCls('anchor', customizePrefixCls);
-
-  const [wrapSSR, hashId] = useStyle(anchorPrefixCls);
-
-  return wrapSSR(
-    <AnchorContent
-      {...props}
-      rootClassName={classNames(hashId, rootClassName)}
-      anchorPrefixCls={anchorPrefixCls}
-    />,
+    </AnchorContext.Provider>,
   );
 };
 

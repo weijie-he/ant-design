@@ -2,15 +2,18 @@ import * as React from 'react';
 import classNames from 'classnames';
 import type { CheckboxRef } from 'rc-checkbox';
 import RcCheckbox from 'rc-checkbox';
+import { composeRef } from 'rc-util/lib/ref';
 
 import { devUseWarning } from '../_util/warning';
 import Wave from '../_util/wave';
 import { TARGET_CLS } from '../_util/wave/interface';
 import { ConfigContext } from '../config-provider';
 import DisabledContext from '../config-provider/DisabledContext';
+import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
 import { FormItemInputContext } from '../form/context';
 import GroupContext from './GroupContext';
 import useStyle from './style';
+import useBubbleLock from './useBubbleLock';
 
 export interface AbstractCheckboxProps<T> {
   prefixCls?: string;
@@ -27,6 +30,8 @@ export interface AbstractCheckboxProps<T> {
   onMouseLeave?: React.MouseEventHandler<HTMLElement>;
   onKeyPress?: React.KeyboardEventHandler<HTMLElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLElement>;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
   value?: any;
   tabIndex?: number;
   name?: string;
@@ -35,6 +40,7 @@ export interface AbstractCheckboxProps<T> {
   autoFocus?: boolean;
   type?: string;
   skipGroup?: boolean;
+  required?: boolean;
 }
 
 export interface CheckboxChangeEventTarget extends CheckboxProps {
@@ -76,6 +82,8 @@ const InternalCheckbox: React.ForwardRefRenderFunction<CheckboxRef, CheckboxProp
   const mergedDisabled = (checkboxGroup?.disabled || disabled) ?? contextDisabled;
 
   const prevValue = React.useRef(restProps.value);
+  const checkboxRef = React.useRef<CheckboxRef>(null);
+  const mergedRef = composeRef(ref, checkboxRef);
 
   if (process.env.NODE_ENV !== 'production') {
     const warning = devUseWarning('Checkbox');
@@ -103,8 +111,15 @@ const InternalCheckbox: React.ForwardRefRenderFunction<CheckboxRef, CheckboxProp
     return () => checkboxGroup?.cancelValue(restProps.value);
   }, [restProps.value]);
 
+  React.useEffect(() => {
+    if (checkboxRef.current?.input) {
+      checkboxRef.current.input.indeterminate = indeterminate;
+    }
+  }, [indeterminate]);
+
   const prefixCls = getPrefixCls('checkbox', customizePrefixCls);
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const rootCls = useCSSVarCls(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
 
   const checkboxProps: CheckboxProps = { ...restProps };
   if (checkboxGroup && !skipGroup) {
@@ -130,34 +145,39 @@ const InternalCheckbox: React.ForwardRefRenderFunction<CheckboxRef, CheckboxProp
     checkbox?.className,
     className,
     rootClassName,
+    cssVarCls,
+    rootCls,
     hashId,
   );
   const checkboxClass = classNames(
-    {
-      [`${prefixCls}-indeterminate`]: indeterminate,
-    },
+    { [`${prefixCls}-indeterminate`]: indeterminate },
     TARGET_CLS,
     hashId,
   );
-  const ariaChecked = indeterminate ? 'mixed' : undefined;
-  return wrapSSR(
+
+  // ============================ Event Lock ============================
+  const [onLabelClick, onInputClick] = useBubbleLock(checkboxProps.onClick);
+
+  // ============================== Render ==============================
+  return wrapCSSVar(
     <Wave component="Checkbox" disabled={mergedDisabled}>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
         className={classString}
         style={{ ...checkbox?.style, ...style }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onClick={onLabelClick}
       >
+        {/* @ts-ignore */}
         <RcCheckbox
-          aria-checked={ariaChecked}
           {...checkboxProps}
+          onClick={onInputClick}
           prefixCls={prefixCls}
           className={checkboxClass}
           disabled={mergedDisabled}
-          ref={ref}
+          ref={mergedRef}
         />
-        {children !== undefined && <span>{children}</span>}
+        {children !== undefined && <span className={`${prefixCls}-label`}>{children}</span>}
       </label>
     </Wave>,
   );

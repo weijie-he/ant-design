@@ -4,7 +4,8 @@ import classNames from 'classnames';
 
 import type { Breakpoint } from '../_util/responsiveObserver';
 import { matchScreen } from '../_util/responsiveObserver';
-import { ConfigContext } from '../config-provider';
+import { devUseWarning } from '../_util/warning';
+import { useComponentConfig } from '../config-provider/context';
 import useSize from '../config-provider/hooks/useSize';
 import useBreakpoint from '../grid/hooks/useBreakpoint';
 import DEFAULT_COLUMN_MAP from './constant';
@@ -22,11 +23,15 @@ interface CompoundedComponent {
 
 export interface InternalDescriptionsItemType extends DescriptionsItemProps {
   key?: React.Key;
+  filled?: boolean;
 }
 
-export interface DescriptionsItemType extends Omit<InternalDescriptionsItemType, 'span'> {
-  span?: number | { [key in Breakpoint]?: number };
+export interface DescriptionsItemType
+  extends Omit<InternalDescriptionsItemType, 'span' | 'filled'> {
+  span?: number | 'filled' | { [key in Breakpoint]?: number };
 }
+
+type SemanticName = 'root' | 'header' | 'title' | 'extra' | 'label' | 'content';
 
 export interface DescriptionsProps {
   prefixCls?: string;
@@ -46,7 +51,10 @@ export interface DescriptionsProps {
   colon?: boolean;
   labelStyle?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
+  styles?: Partial<Record<SemanticName, React.CSSProperties>>;
+  classNames?: Partial<Record<SemanticName, string>>;
   items?: DescriptionsItemType[];
+  id?: string;
 }
 
 const Descriptions: React.FC<DescriptionsProps> & CompoundedComponent = (props) => {
@@ -65,13 +73,32 @@ const Descriptions: React.FC<DescriptionsProps> & CompoundedComponent = (props) 
     size: customizeSize,
     labelStyle,
     contentStyle,
+    styles,
     items,
+    classNames: descriptionsClassNames,
     ...restProps
   } = props;
-  const { getPrefixCls, direction, descriptions } = React.useContext(ConfigContext);
+  const {
+    getPrefixCls,
+    direction,
+    className: contextClassName,
+    style: contextStyle,
+    classNames: contextClassNames,
+    styles: contextStyles,
+  } = useComponentConfig('descriptions');
   const prefixCls = getPrefixCls('descriptions', customizePrefixCls);
   const screens = useBreakpoint();
 
+  // ============================== Warn ==============================
+  if (process.env.NODE_ENV !== 'production') {
+    const warning = devUseWarning('Descriptions');
+    [
+      ['labelStyle', 'styles={{ label: {} }}'],
+      ['contentStyle', 'styles={{ content: {} }}'],
+    ].forEach(([deprecatedName, newName]) => {
+      warning.deprecated(!(deprecatedName in props), deprecatedName, newName);
+    });
+  }
   // Column count
   const mergedColumn = React.useMemo(() => {
     if (typeof column === 'number') {
@@ -92,20 +119,33 @@ const Descriptions: React.FC<DescriptionsProps> & CompoundedComponent = (props) 
   const mergedSize = useSize(customizeSize);
   const rows = useRow(mergedColumn, mergedItems);
 
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
 
   // ======================== Render ========================
   const contextValue = React.useMemo(
-    () => ({ labelStyle, contentStyle }),
-    [labelStyle, contentStyle],
+    () => ({
+      labelStyle,
+      contentStyle,
+      styles: {
+        content: { ...contextStyles.content, ...styles?.content },
+        label: { ...contextStyles.label, ...styles?.label },
+      },
+      classNames: {
+        label: classNames(contextClassNames.label, descriptionsClassNames?.label),
+        content: classNames(contextClassNames.content, descriptionsClassNames?.content),
+      },
+    }),
+    [labelStyle, contentStyle, styles, descriptionsClassNames, contextClassNames, contextStyles],
   );
 
-  return wrapSSR(
+  return wrapCSSVar(
     <DescriptionsContext.Provider value={contextValue}>
       <div
         className={classNames(
           prefixCls,
-          descriptions?.className,
+          contextClassName,
+          contextClassNames.root,
+          descriptionsClassNames?.root,
           {
             [`${prefixCls}-${mergedSize}`]: mergedSize && mergedSize !== 'default',
             [`${prefixCls}-bordered`]: !!bordered,
@@ -114,14 +154,47 @@ const Descriptions: React.FC<DescriptionsProps> & CompoundedComponent = (props) 
           className,
           rootClassName,
           hashId,
+          cssVarCls,
         )}
-        style={{ ...descriptions?.style, ...style }}
+        style={{ ...contextStyle, ...contextStyles.root, ...styles?.root, ...style }}
         {...restProps}
       >
         {(title || extra) && (
-          <div className={`${prefixCls}-header`}>
-            {title && <div className={`${prefixCls}-title`}>{title}</div>}
-            {extra && <div className={`${prefixCls}-extra`}>{extra}</div>}
+          <div
+            className={classNames(
+              `${prefixCls}-header`,
+              contextClassNames.header,
+              descriptionsClassNames?.header,
+            )}
+            style={{ ...contextStyles.header, ...styles?.header }}
+          >
+            {title && (
+              <div
+                className={classNames(
+                  `${prefixCls}-title`,
+                  contextClassNames.title,
+                  descriptionsClassNames?.title,
+                )}
+                style={{
+                  ...contextStyles.title,
+                  ...styles?.title,
+                }}
+              >
+                {title}
+              </div>
+            )}
+            {extra && (
+              <div
+                className={classNames(
+                  `${prefixCls}-extra`,
+                  contextClassNames.extra,
+                  descriptionsClassNames?.extra,
+                )}
+                style={{ ...contextStyles.extra, ...styles?.extra }}
+              >
+                {extra}
+              </div>
+            )}
           </div>
         )}
 

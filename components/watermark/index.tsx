@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useMutateObserver } from '@rc-component/mutate-observer';
 import classNames from 'classnames';
+import useEvent from 'rc-util/lib/hooks/useEvent';
 
 import { useToken } from '../theme/internal';
 import WatermarkContext from './context';
@@ -9,6 +10,7 @@ import useClips, { FontGap } from './useClips';
 import useRafDebounce from './useRafDebounce';
 import useWatermark from './useWatermark';
 import { getPixelRatio, reRendering } from './utils';
+import toList from '../_util/toList';
 
 export interface WatermarkProps {
   zIndex?: number;
@@ -18,11 +20,12 @@ export interface WatermarkProps {
   image?: string;
   content?: string | string[];
   font?: {
-    color?: string;
+    color?: CanvasFillStrokeStyles['fillStyle'];
     fontSize?: number | string;
     fontWeight?: 'normal' | 'light' | 'weight' | number;
     fontStyle?: 'none' | 'normal' | 'italic' | 'oblique';
     fontFamily?: string;
+    textAlign?: CanvasTextAlign;
   };
   style?: React.CSSProperties;
   className?: string;
@@ -30,6 +33,7 @@ export interface WatermarkProps {
   gap?: [number, number];
   offset?: [number, number];
   children?: React.ReactNode;
+  inherit?: boolean;
 }
 
 /**
@@ -39,6 +43,14 @@ export interface WatermarkProps {
 function getSizeDiff<T>(prev: Set<T>, next: Set<T>) {
   return prev.size === next.size ? prev : next;
 }
+
+const DEFAULT_GAP_X = 100;
+const DEFAULT_GAP_Y = 100;
+
+const fixedStyle: React.CSSProperties = {
+  position: 'relative',
+  overflow: 'hidden',
+};
 
 const Watermark: React.FC<WatermarkProps> = (props) => {
   const {
@@ -56,10 +68,17 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
     style,
     className,
     rootClassName,
-    gap = [100, 100],
+    gap = [DEFAULT_GAP_X, DEFAULT_GAP_Y],
     offset,
     children,
+    inherit = true,
   } = props;
+
+  const mergedStyle = {
+    ...fixedStyle,
+    ...style,
+  };
+
   const [, token] = useToken();
   const {
     color = token.colorFill,
@@ -67,16 +86,17 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
     fontWeight = 'normal',
     fontStyle = 'normal',
     fontFamily = 'sans-serif',
+    textAlign = 'center',
   } = font;
 
-  const [gapX, gapY] = gap;
+  const [gapX = DEFAULT_GAP_X, gapY = DEFAULT_GAP_Y] = gap;
   const gapXCenter = gapX / 2;
   const gapYCenter = gapY / 2;
   const offsetLeft = offset?.[0] ?? gapXCenter;
   const offsetTop = offset?.[1] ?? gapYCenter;
 
   const markStyle = React.useMemo(() => {
-    const mergedStyle: React.CSSProperties = {
+    const mergedMarkStyle: React.CSSProperties = {
       zIndex,
       position: 'absolute',
       left: 0,
@@ -91,18 +111,18 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
     let positionLeft = offsetLeft - gapXCenter;
     let positionTop = offsetTop - gapYCenter;
     if (positionLeft > 0) {
-      mergedStyle.left = `${positionLeft}px`;
-      mergedStyle.width = `calc(100% - ${positionLeft}px)`;
+      mergedMarkStyle.left = `${positionLeft}px`;
+      mergedMarkStyle.width = `calc(100% - ${positionLeft}px)`;
       positionLeft = 0;
     }
     if (positionTop > 0) {
-      mergedStyle.top = `${positionTop}px`;
-      mergedStyle.height = `calc(100% - ${positionTop}px)`;
+      mergedMarkStyle.top = `${positionTop}px`;
+      mergedMarkStyle.height = `calc(100% - ${positionTop}px)`;
       positionTop = 0;
     }
-    mergedStyle.backgroundPosition = `${positionLeft}px ${positionTop}px`;
+    mergedMarkStyle.backgroundPosition = `${positionLeft}px ${positionTop}px`;
 
-    return mergedStyle;
+    return mergedMarkStyle;
   }, [zIndex, offsetLeft, gapXCenter, offsetTop, gapYCenter]);
 
   const [container, setContainer] = React.useState<HTMLDivElement | null>();
@@ -126,7 +146,7 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
     let defaultHeight = 64;
     if (!image && ctx.measureText) {
       ctx.font = `${Number(fontSize)}px ${fontFamily}`;
-      const contents = Array.isArray(content) ? content : [content];
+      const contents = toList(content);
       const sizes = contents.map((item) => {
         const metrics = ctx.measureText(item!);
 
@@ -170,6 +190,7 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
             fontStyle,
             fontWeight,
             fontFamily,
+            textAlign,
           },
           gapX,
           gapY,
@@ -210,13 +231,27 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
   }, [watermarkInfo, targetElements]);
 
   // ============================ Observe =============================
-  const onMutate = (mutations: MutationRecord[]) => {
+  const onMutate = useEvent((mutations: MutationRecord[]) => {
     mutations.forEach((mutation) => {
       if (reRendering(mutation, isWatermarkEle)) {
         syncWatermark();
+      } else if (mutation.target === container && mutation.attributeName === 'style') {
+        // We've only force container not modify.
+        // Not consider nest case.
+        const keyStyles = Object.keys(fixedStyle);
+
+        for (let i = 0; i < keyStyles.length; i += 1) {
+          const key = keyStyles[i];
+          const oriValue = (mergedStyle as any)[key];
+          const currentValue = (container.style as any)[key];
+
+          if (oriValue && oriValue !== currentValue) {
+            (container.style as any)[key] = oriValue;
+          }
+        }
       }
     });
-  };
+  });
 
   useMutateObserver(targetElements, onMutate);
 
@@ -232,6 +267,7 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
     fontWeight,
     fontStyle,
     fontFamily,
+    textAlign,
     gapX,
     gapY,
     offsetLeft,
@@ -263,13 +299,15 @@ const Watermark: React.FC<WatermarkProps> = (props) => {
   );
 
   // ============================= Render =============================
+  const childNode = inherit ? (
+    <WatermarkContext.Provider value={watermarkContext}>{children}</WatermarkContext.Provider>
+  ) : (
+    children
+  );
+
   return (
-    <div
-      ref={setContainer}
-      className={classNames(className, rootClassName)}
-      style={{ position: 'relative', ...style }}
-    >
-      <WatermarkContext.Provider value={watermarkContext}>{children}</WatermarkContext.Provider>
+    <div ref={setContainer} className={classNames(className, rootClassName)} style={mergedStyle}>
+      {childNode}
     </div>
   );
 };

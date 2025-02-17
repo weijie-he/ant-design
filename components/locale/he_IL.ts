@@ -1,8 +1,8 @@
-/* eslint-disable no-template-curly-in-string */
 import Pagination from 'rc-pagination/lib/locale/he_IL';
+
+import type { Locale } from '.';
 import Calendar from '../calendar/locale/he_IL';
 import DatePicker from '../date-picker/locale/he_IL';
-import type { Locale } from '.';
 import TimePicker from '../time-picker/locale/he_IL';
 
 const typeTemplate = '${label} הוא לא ${type} תקין';
@@ -29,6 +29,11 @@ const localeValues: Locale = {
     triggerDesc: 'לחץ למיון לפי סדר יורד',
     triggerAsc: 'לחץ למיון לפי סדר עולה',
     cancelSort: 'לחץ כדי לבטל את המיון',
+  },
+  Tour: {
+    Next: 'הבא',
+    Previous: 'הקודם',
+    Finish: 'סיום',
   },
   Modal: {
     okText: 'אישור',
@@ -63,9 +68,6 @@ const localeValues: Locale = {
     copy: 'העתק',
     copied: 'הועתק',
     expand: 'הרחב',
-  },
-  PageHeader: {
-    back: 'חזרה',
   },
   Form: {
     defaultValidateMessages: {

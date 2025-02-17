@@ -2,10 +2,9 @@ import React from 'react';
 import CSSMotion from 'rc-motion';
 import { genCSSMotion } from 'rc-motion/lib/CSSMotion';
 import KeyCode from 'rc-util/lib/KeyCode';
-import { act } from 'react-dom/test-utils';
 
 import Modal from '..';
-import { fireEvent, render, waitFakeTimer } from '../../../tests/utils';
+import { act, fireEvent, render, waitFakeTimer } from '../../../tests/utils';
 import Button from '../../button';
 import ConfigProvider from '../../config-provider';
 import Input from '../../input';
@@ -14,6 +13,18 @@ import type { ModalFunc } from '../confirm';
 
 jest.mock('rc-util/lib/Portal');
 jest.mock('rc-motion');
+
+// TODO: Remove this. Mock for React 19
+jest.mock('react-dom', () => {
+  const realReactDOM = jest.requireActual('react-dom');
+
+  if (realReactDOM.version.startsWith('19')) {
+    const realReactDOMClient = jest.requireActual('react-dom/client');
+    realReactDOM.createRoot = realReactDOMClient.createRoot;
+  }
+
+  return realReactDOM;
+});
 
 describe('Modal.hook', () => {
   // Inject CSSMotion to replace with No transition support
@@ -35,6 +46,7 @@ describe('Modal.hook', () => {
           <Button
             onClick={() => {
               instance = modal.confirm({
+                zIndex: 903,
                 content: (
                   <Context.Consumer>
                     {(name) => <div className="test-hook">{name}</div>}
@@ -54,6 +66,10 @@ describe('Modal.hook', () => {
     expect(document.body.querySelectorAll('.test-hook')[0].textContent).toBe('bamboo');
     expect(document.body.querySelectorAll('.ant-btn').length).toBeTruthy();
     expect(document.body.querySelectorAll('.ant-modal-body').length).toBeTruthy();
+
+    expect(document.querySelector('.ant-modal-wrap')).toHaveStyle({
+      zIndex: '903',
+    });
 
     // Update instance
     act(() => {
@@ -393,13 +409,12 @@ describe('Modal.hook', () => {
 
     for (let i = 10; i > 0; i -= 1) {
       rerender(<Demo count={i} />);
-      // eslint-disable-next-line no-await-in-loop
+
       await waitFakeTimer();
 
       expect(document.body.querySelector('.ant-btn-primary')!.textContent).toEqual('确 定');
       fireEvent.click(document.body.querySelector('.ant-btn-primary')!);
 
-      // eslint-disable-next-line no-await-in-loop
       await waitFakeTimer();
     }
 

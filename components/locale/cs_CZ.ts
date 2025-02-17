@@ -1,8 +1,8 @@
-/* eslint-disable no-template-curly-in-string */
 import Pagination from 'rc-pagination/lib/locale/cs_CZ';
+
+import type { Locale } from '.';
 import Calendar from '../calendar/locale/cs_CZ';
 import DatePicker from '../date-picker/locale/cs_CZ';
-import type { Locale } from '.';
 import TimePicker from '../time-picker/locale/cs_CZ';
 
 const typeTemplate = '${label} není platný ${type}';
@@ -21,7 +21,7 @@ const localeValues: Locale = {
     filterConfirm: 'Potvrdit',
     filterReset: 'Obnovit',
     filterEmptyText: 'Žádné filtry',
-    filterCheckall: 'Vybrat všechny položky',
+    filterCheckAll: 'Vybrat všechny položky',
     filterSearchPlaceholder: 'Vyhledat ve filtrech',
     emptyText: 'Žádná data',
     selectAll: 'Vybrat všechny řádky na současné stránce',
@@ -74,9 +74,6 @@ const localeValues: Locale = {
     copy: 'Kopírovat',
     copied: 'Zkopírované',
     expand: 'Zvětšit',
-  },
-  PageHeader: {
-    back: 'Zpět',
   },
   Form: {
     optional: '(nepovinné)',

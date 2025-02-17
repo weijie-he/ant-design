@@ -26,7 +26,7 @@ export interface BreadcrumbItemType {
    */
   path?: string;
   title?: React.ReactNode;
-  /* @deprecated Please use `title` instead */
+  /** @deprecated Please use `title` instead */
   breadcrumbName?: string;
   menu?: BreadcrumbItemProps['menu'];
   /** @deprecated Please use `menu` instead */
@@ -93,8 +93,9 @@ const Breadcrumb = <T extends AnyObject = AnyObject>(props: BreadcrumbProps<T>) 
   const { getPrefixCls, direction, breadcrumb } = React.useContext(ConfigContext);
 
   let crumbs: React.ReactNode;
+
   const prefixCls = getPrefixCls('breadcrumb', customizePrefixCls);
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
 
   const mergedItems = useItems(items, legacyRoutes);
 
@@ -198,6 +199,7 @@ const Breadcrumb = <T extends AnyObject = AnyObject>(props: BreadcrumbProps<T>) 
       const isLastItem = index === childrenLength - 1;
       return cloneElement(element, {
         separator: isLastItem ? '' : separator,
+        // eslint-disable-next-line react/no-array-index-key
         key: index,
       });
     });
@@ -212,11 +214,12 @@ const Breadcrumb = <T extends AnyObject = AnyObject>(props: BreadcrumbProps<T>) 
     className,
     rootClassName,
     hashId,
+    cssVarCls,
   );
 
   const mergedStyle: React.CSSProperties = { ...breadcrumb?.style, ...style };
 
-  return wrapSSR(
+  return wrapCSSVar(
     <nav className={breadcrumbClassName} style={mergedStyle} {...restProps}>
       <ol>{crumbs}</ol>
     </nav>,

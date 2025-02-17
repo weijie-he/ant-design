@@ -13,8 +13,7 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
       key: `sub${key}`,
       icon: React.createElement(icon),
       label: `subnav ${key}`,
-
-      children: new Array(4).fill(null).map((_, j) => {
+      children: Array.from({ length: 4 }).map((_, j) => {
         const subKey = index * 4 + j + 1;
         return {
           key: subKey,
@@ -27,7 +26,7 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
 
 const App: React.FC = () => {
   const {
-    token: { colorBgContainer },
+    token: { colorBgContainer, colorBgLayout, borderRadiusLG },
   } = theme.useToken();
 
   return (
@@ -39,8 +38,8 @@ const App: React.FC = () => {
             headerBg: '#1677ff',
             headerHeight: 64,
             headerPadding: `0 24px`,
-            headerColor: '#fff',
-            siderBg: '#fff',
+            headerColor: colorBgContainer,
+            siderBg: '#800080',
           },
         },
       }}
@@ -48,15 +47,26 @@ const App: React.FC = () => {
       <Layout>
         <Header style={{ display: 'flex', alignItems: 'center' }}>
           <div className="demo-logo" />
-          <div style={{ marginLeft: 24, fontSize: 24 }}>Ant Design</div>
+          <div style={{ marginInlineStart: 24, fontSize: 24 }}>Ant Design</div>
         </Header>
         <Layout>
-          <Sider width={200} style={{ background: colorBgContainer }}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Layout: {
+                  siderBg: 'red',
+                },
+              },
+            }}
+          >
+            <Sider width={32} />
+          </ConfigProvider>
+          <Sider width={200}>
             <Menu
               mode="inline"
               defaultSelectedKeys={['1']}
               defaultOpenKeys={['sub1']}
-              style={{ height: '100%', borderRight: 0 }}
+              style={{ borderRight: 0 }}
               items={items2}
             />
           </Sider>
@@ -71,7 +81,8 @@ const App: React.FC = () => {
                 padding: 24,
                 margin: 0,
                 minHeight: 280,
-                background: colorBgContainer,
+                background: colorBgLayout,
+                borderRadius: borderRadiusLG,
               }}
             >
               Content

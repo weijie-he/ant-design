@@ -1,13 +1,15 @@
-import classNames from 'classnames';
 import * as React from 'react';
-import type { ConfigConsumerProps } from '../config-provider';
-import { ConfigContext } from '../config-provider';
+import classNames from 'classnames';
+import pickAttrs from 'rc-util/lib/pickAttrs';
+
+import type { HTMLAriaDataAttributes } from '../_util/aria-data-attrs';
+import { useComponentConfig } from '../config-provider/context';
 import Skeleton from '../skeleton';
 import StatisticNumber from './Number';
 import useStyle from './style';
 import type { FormatConfig, valueType } from './utils';
 
-export interface StatisticProps extends FormatConfig {
+interface StatisticReactProps extends FormatConfig {
   prefixCls?: string;
   className?: string;
   rootClassName?: string;
@@ -23,6 +25,8 @@ export interface StatisticProps extends FormatConfig {
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
 }
 
+export type StatisticProps = HTMLAriaDataAttributes & StatisticReactProps;
+
 const Statistic: React.FC<StatisticProps> = (props) => {
   const {
     prefixCls: customizePrefixCls,
@@ -36,25 +40,35 @@ const Statistic: React.FC<StatisticProps> = (props) => {
     prefix,
     suffix,
     loading = false,
-    onMouseEnter,
-    onMouseLeave,
+    /* --- FormatConfig starts --- */
+    formatter,
+    precision,
     decimalSeparator = '.',
     groupSeparator = ',',
+    /* --- FormatConfig starts --- */
+    onMouseEnter,
+    onMouseLeave,
+    ...rest
   } = props;
 
-  const { getPrefixCls, direction, statistic } =
-    React.useContext<ConfigConsumerProps>(ConfigContext);
+  const {
+    getPrefixCls,
+    direction,
+    className: contextClassName,
+    style: contextStyle,
+  } = useComponentConfig('statistic');
 
   const prefixCls = getPrefixCls('statistic', customizePrefixCls);
 
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
 
   const valueNode: React.ReactNode = (
     <StatisticNumber
       decimalSeparator={decimalSeparator}
       groupSeparator={groupSeparator}
       prefixCls={prefixCls}
-      {...props}
+      formatter={formatter}
+      precision={precision}
       value={value}
     />
   );
@@ -64,16 +78,20 @@ const Statistic: React.FC<StatisticProps> = (props) => {
     {
       [`${prefixCls}-rtl`]: direction === 'rtl',
     },
-    statistic?.className,
+    contextClassName,
     className,
     rootClassName,
     hashId,
+    cssVarCls,
   );
 
-  return wrapSSR(
+  const restProps = pickAttrs(rest, { aria: true, data: true });
+
+  return wrapCSSVar(
     <div
+      {...restProps}
       className={cls}
-      style={{ ...statistic?.style, ...style }}
+      style={{ ...contextStyle, ...style }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

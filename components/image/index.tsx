@@ -4,10 +4,11 @@ import classNames from 'classnames';
 import RcImage from 'rc-image';
 import type { ImageProps } from 'rc-image';
 
+import { useZIndex } from '../_util/hooks/useZIndex';
 import { getTransitionName } from '../_util/motion';
-import { ConfigContext } from '../config-provider';
-import defaultLocale from '../locale/en_US';
-// CSSINJS
+import { useComponentConfig } from '../config-provider/context';
+import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
+import { useLocale } from '../locale';
 import PreviewGroup, { icons } from './PreviewGroup';
 import useStyle from './style';
 
@@ -26,28 +27,36 @@ const Image: CompositionImage<ImageProps> = (props) => {
   } = props;
   const {
     getPrefixCls,
-    locale: contextLocale = defaultLocale,
     getPopupContainer: getContextPopupContainer,
-    image,
-  } = React.useContext(ConfigContext);
+    className: contextClassName,
+    style: contextStyle,
+    preview: contextPreview,
+  } = useComponentConfig('image');
+
+  const [imageLocale] = useLocale('Image');
 
   const prefixCls = getPrefixCls('image', customizePrefixCls);
   const rootPrefixCls = getPrefixCls();
 
-  const imageLocale = contextLocale.Image || defaultLocale.Image;
   // Style
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+  const rootCls = useCSSVarCls(prefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
 
-  const mergedRootClassName = classNames(rootClassName, hashId);
+  const mergedRootClassName = classNames(rootClassName, hashId, cssVarCls, rootCls);
 
-  const mergedClassName = classNames(className, hashId, image?.className);
+  const mergedClassName = classNames(className, hashId, contextClassName);
 
-  const mergedPreview = React.useMemo(() => {
+  const [zIndex] = useZIndex(
+    'ImagePreview',
+    typeof preview === 'object' ? preview.zIndex : undefined,
+  );
+
+  const mergedPreview = React.useMemo<ImageProps['preview']>(() => {
     if (preview === false) {
       return preview;
     }
     const _preview = typeof preview === 'object' ? preview : {};
-    const { getContainer, ...restPreviewProps } = _preview;
+    const { getContainer, closeIcon, rootClassName, ...restPreviewProps } = _preview;
     return {
       mask: (
         <div className={`${prefixCls}-mask-info`}>
@@ -57,15 +66,18 @@ const Image: CompositionImage<ImageProps> = (props) => {
       ),
       icons,
       ...restPreviewProps,
-      getContainer: getContainer || getContextPopupContainer,
+      rootClassName: classNames(mergedRootClassName, rootClassName),
+      getContainer: getContainer ?? getContextPopupContainer,
       transitionName: getTransitionName(rootPrefixCls, 'zoom', _preview.transitionName),
       maskTransitionName: getTransitionName(rootPrefixCls, 'fade', _preview.maskTransitionName),
+      zIndex,
+      closeIcon: closeIcon ?? contextPreview?.closeIcon,
     };
-  }, [preview, imageLocale]);
+  }, [preview, imageLocale, contextPreview?.closeIcon]);
 
-  const mergedStyle: React.CSSProperties = { ...image?.style, ...style };
+  const mergedStyle: React.CSSProperties = { ...contextStyle, ...style };
 
-  return wrapSSR(
+  return wrapCSSVar(
     <RcImage
       prefixCls={prefixCls}
       preview={mergedPreview}

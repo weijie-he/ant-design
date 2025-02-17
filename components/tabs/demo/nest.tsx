@@ -60,7 +60,6 @@ const App: React.FC = () => {
         <Option value="card">Child - card</Option>
         <Option value="editable-card">Parent - card edit</Option>
       </Select>
-
       <Tabs
         defaultActiveKey="1"
         tabPosition={parentPos}
@@ -75,9 +74,8 @@ const App: React.FC = () => {
                 tabPosition={childPos}
                 type={childType}
                 style={{ height: 300 }}
-                items={new Array(20).fill(null).map((_, index) => {
+                items={Array.from({ length: 20 }).map((_, index) => {
                   const key = String(index);
-
                   return {
                     label: `Tab ${key}`,
                     key,

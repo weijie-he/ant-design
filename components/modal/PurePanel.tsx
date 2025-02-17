@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-
 import * as React from 'react';
 import classNames from 'classnames';
 import { Panel } from 'rc-dialog';
@@ -7,14 +5,15 @@ import type { PanelProps } from 'rc-dialog/lib/Dialog/Content/Panel';
 
 import { withPureRenderTheme } from '../_util/PurePanel';
 import { ConfigContext } from '../config-provider';
+import useCSSVarCls from '../config-provider/hooks/useCSSVarCls';
 import { ConfirmContent } from './ConfirmDialog';
 import type { ModalFuncProps } from './interface';
 import { Footer, renderCloseIcon } from './shared';
 import useStyle from './style';
 
 export interface PurePanelProps
-  extends Omit<PanelProps, 'prefixCls'>,
-    Pick<ModalFuncProps, 'type'> {
+  extends Omit<PanelProps, 'prefixCls' | 'footer'>,
+    Pick<ModalFuncProps, 'type' | 'footer'> {
   prefixCls?: string;
   style?: React.CSSProperties;
 }
@@ -28,14 +27,15 @@ const PurePanel: React.FC<PurePanelProps> = (props) => {
     type,
     title,
     children,
+    footer,
     ...restProps
   } = props;
   const { getPrefixCls } = React.useContext(ConfigContext);
 
   const rootPrefixCls = getPrefixCls();
   const prefixCls = customizePrefixCls || getPrefixCls('modal');
-
-  const [, hashId] = useStyle(prefixCls);
+  const rootCls = useCSSVarCls(rootPrefixCls);
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls, rootCls);
 
   const confirmPrefixCls = `${prefixCls}-confirm`;
 
@@ -60,12 +60,12 @@ const PurePanel: React.FC<PurePanelProps> = (props) => {
     additionalProps = {
       closable: closable ?? true,
       title,
-      footer: props.footer === undefined ? <Footer {...props} /> : props.footer,
+      footer: footer !== null && <Footer {...props} />,
       children,
     };
   }
 
-  return (
+  return wrapCSSVar(
     <Panel
       prefixCls={prefixCls}
       className={classNames(
@@ -74,12 +74,14 @@ const PurePanel: React.FC<PurePanelProps> = (props) => {
         type && confirmPrefixCls,
         type && `${confirmPrefixCls}-${type}`,
         className,
+        cssVarCls,
+        rootCls,
       )}
       {...restProps}
       closeIcon={renderCloseIcon(prefixCls, closeIcon)}
       closable={closable}
       {...additionalProps}
-    />
+    />,
   );
 };
 

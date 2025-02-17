@@ -1,6 +1,8 @@
-import { SmileOutlined } from '@ant-design/icons';
 import React, { useEffect } from 'react';
+import { SmileOutlined } from '@ant-design/icons';
+import ConfigProvider from 'antd/es/config-provider';
 import type { NotificationConfig } from 'antd/es/notification/interface';
+
 import App from '..';
 import mountTest from '../../../tests/shared/mountTest';
 import rtlTest from '../../../tests/shared/rtlTest';
@@ -200,12 +202,58 @@ describe('App', () => {
 
       expect(container.querySelector('.anticon')).toBeTruthy();
       const dynamicStyles = Array.from(document.querySelectorAll('style[data-css-hash]'));
+      // Self-contained .anticon style
+      const regex = /(?:^|\})\s*\.anticon\s*{[^}]*}/;
       expect(
         dynamicStyles.some((style) => {
           const { innerHTML } = style;
-          return innerHTML.startsWith('.anticon');
+          return regex.test(innerHTML);
         }),
       ).toBeTruthy();
+    });
+  });
+
+  describe('component', () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    afterEach(() => {
+      errorSpy.mockReset();
+    });
+
+    afterAll(() => {
+      errorSpy.mockRestore();
+    });
+
+    it('replace', () => {
+      const { container } = render(
+        <App component="section">
+          <p />
+        </App>,
+      );
+
+      expect(container.querySelector('section.ant-app')).toBeTruthy();
+    });
+
+    it('to false', () => {
+      const { container } = render(
+        <App component={false}>
+          <p />
+        </App>,
+      );
+      expect(errorSpy).not.toHaveBeenCalled();
+      expect(container.querySelector('.ant-app')).toBeFalsy();
+    });
+
+    it('should warn if component is false and cssVarCls is not empty', () => {
+      render(
+        <ConfigProvider theme={{ cssVar: true }}>
+          <App component={false} />
+        </ConfigProvider>,
+      );
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        'Warning: [antd: App] When using cssVar, ensure `component` is assigned a valid React component string.',
+      );
     });
   });
 });

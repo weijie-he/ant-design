@@ -1,10 +1,10 @@
-import { EXPAND_COLUMN, Summary } from 'rc-table';
 import * as React from 'react';
+import { EXPAND_COLUMN, Summary } from 'rc-table';
+import type { Reference } from 'rc-table';
+
 import type { AnyObject } from '../_util/type';
 import Column from './Column';
 import ColumnGroup from './ColumnGroup';
-import type { TableProps } from './InternalTable';
-import InternalTable from './InternalTable';
 import {
   SELECTION_ALL,
   SELECTION_COLUMN,
@@ -12,10 +12,12 @@ import {
   SELECTION_NONE,
 } from './hooks/useSelection';
 import type { RefTable } from './interface';
+import type { TableProps } from './InternalTable';
+import InternalTable from './InternalTable';
 
 const Table = <RecordType extends AnyObject = AnyObject>(
   props: TableProps<RecordType>,
-  ref: React.Ref<HTMLDivElement>,
+  ref: React.Ref<Reference>,
 ) => {
   const renderTimesRef = React.useRef<number>(0);
   renderTimesRef.current += 1;

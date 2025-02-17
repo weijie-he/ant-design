@@ -1,15 +1,19 @@
 import React from 'react';
-import { StyleProvider, createCache, extractStyle } from '@ant-design/cssinjs';
+import { render as testLibRender } from '@testing-library/react';
+import { createCache, extractStyle, StyleProvider } from '@ant-design/cssinjs';
+
 import notification from '..';
-import { fireEvent, pureRender, render } from '../../../tests/utils';
+import { act, fireEvent, pureRender, render } from '../../../tests/utils';
 import ConfigProvider from '../../config-provider';
 
 describe('notification.hooks', () => {
   beforeEach(() => {
+    document.body.innerHTML = '';
     jest.useFakeTimers();
   });
 
   afterEach(() => {
+    jest.clearAllTimers();
     jest.useRealTimers();
   });
 
@@ -169,5 +173,102 @@ describe('notification.hooks', () => {
 
     const styleText = extractStyle(cache, true);
     expect(styleText).not.toContain('.ant-notification');
+  });
+
+  it('disable stack', () => {
+    const Demo = () => {
+      const [api, holder] = notification.useNotification({ stack: false });
+
+      React.useEffect(() => {
+        api.info({
+          message: null,
+          description: 'test',
+        });
+      }, []);
+
+      return holder;
+    };
+
+    render(<Demo />);
+
+    expect(document.querySelector('.ant-notification-stack')).toBeFalsy();
+  });
+
+  it('support duration', () => {
+    const Demo = () => {
+      const [api, holder] = notification.useNotification({ duration: 1.5 });
+
+      return (
+        <>
+          <a
+            onClick={() => {
+              api.info({
+                message: null,
+                description: 'test',
+              });
+            }}
+          >
+            Show
+          </a>
+          {holder}
+        </>
+      );
+    };
+
+    const { container } = render(<Demo />);
+    fireEvent.click(container.querySelector('a')!);
+
+    function getNoticeCount() {
+      return Array.from(document.querySelectorAll('.ant-notification-notice-wrapper')).filter(
+        (node) => !node.classList.contains('ant-notification-fade-leave'),
+      ).length;
+    }
+
+    // Pass 1s
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(getNoticeCount()).toBe(1);
+
+    // Pass 2s
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(getNoticeCount()).toBe(0);
+  });
+
+  it('should hide close btn when closeIcon setting to null or false', () => {
+    const Demo = () => {
+      const Holder = (className: string, closeIcon?: React.ReactNode) => {
+        const [api, holder] = notification.useNotification({ closeIcon });
+
+        React.useEffect(() => {
+          api.info({
+            className,
+            message: 'Notification Title',
+            duration: 0,
+          });
+        }, []);
+
+        return holder;
+      };
+
+      return (
+        <>
+          {Holder('normal')}
+          {Holder('custom', <span className="custom-close-icon">Close</span>)}
+          {Holder('with-null', null)}
+          {Holder('with-false', false)}
+        </>
+      );
+    };
+
+    // We use origin testing lib here since StrictMode will render multiple times
+    testLibRender(<Demo />);
+
+    expect(document.querySelectorAll('.normal .ant-notification-notice-close').length).toBe(1);
+    expect(document.querySelectorAll('.custom .custom-close-icon').length).toBe(1);
+    expect(document.querySelectorAll('.with-null .ant-notification-notice-close').length).toBe(0);
+    expect(document.querySelectorAll('.with-false .ant-notification-notice-close').length).toBe(0);
   });
 });

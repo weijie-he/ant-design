@@ -1,9 +1,9 @@
-/* eslint-disable no-template-curly-in-string */
 import Pagination from 'rc-pagination/lib/locale/si_LK';
+
+import type { Locale } from '.';
+import Calendar from '../calendar/locale/si_LK';
 import DatePicker from '../date-picker/locale/si_LK';
 import TimePicker from '../time-picker/locale/si_LK';
-import Calendar from '../calendar/locale/si_LK';
-import type { Locale } from '.';
 
 const typeTemplate = '${label} වලංගු ${type} ක් නොවේ';
 
@@ -21,7 +21,7 @@ const localeValues: Locale = {
     filterConfirm: 'හරි',
     filterReset: 'යළි සකසන්න',
     filterEmptyText: 'පෙරහන් නැත',
-    filterCheckall: 'සියළු අථක තෝරන්න',
+    filterCheckAll: 'සියළු අථක තෝරන්න',
     filterSearchPlaceholder: 'පෙරහන් තුළ සොයන්න',
     emptyText: 'දත්ත නැත',
     selectAll: 'වත්මන් පිටුව තෝරන්න',
@@ -74,9 +74,6 @@ const localeValues: Locale = {
     copy: 'පිටපත්',
     copied: 'පිටපත් විය',
     expand: 'විහිදුවන්න',
-  },
-  PageHeader: {
-    back: 'ආපසු',
   },
   Form: {
     optional: '(විකල්පයකි)',

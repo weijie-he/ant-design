@@ -1,8 +1,8 @@
-/* eslint-disable no-template-curly-in-string */
 import Pagination from 'rc-pagination/lib/locale/en_GB';
+
+import type { Locale } from '.';
 import Calendar from '../calendar/locale/en_GB';
 import DatePicker from '../date-picker/locale/en_GB';
-import type { Locale } from '.';
 import TimePicker from '../time-picker/locale/en_GB';
 
 const typeTemplate = '${label} is not a valid ${type}';
@@ -21,7 +21,7 @@ const localeValues: Locale = {
     filterConfirm: 'OK',
     filterReset: 'Reset',
     filterEmptyText: 'No filters',
-    filterCheckall: 'Select all items',
+    filterCheckAll: 'Select all items',
     filterSearchPlaceholder: 'Search in filters',
     emptyText: 'No data',
     selectAll: 'Select current page',
@@ -74,9 +74,6 @@ const localeValues: Locale = {
     copy: 'Copy',
     copied: 'Copied',
     expand: 'Expand',
-  },
-  PageHeader: {
-    back: 'Back',
   },
   Form: {
     optional: '(optional)',

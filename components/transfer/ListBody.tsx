@@ -1,12 +1,12 @@
-import classNames from 'classnames';
 import * as React from 'react';
-
+import classNames from 'classnames';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
+
 import type { KeyWiseTransferItem } from '.';
 import Pagination from '../pagination';
-import ListItem from './ListItem';
-import type { PaginationType } from './interface';
+import type { PaginationType, TransferKey } from './interface';
 import type { RenderedItem, TransferListProps } from './list';
+import ListItem from './ListItem';
 
 export const OmitProps = ['handleFilter', 'handleClear', 'checkedKeys'] as const;
 export type OmitProp = (typeof OmitProps)[number];
@@ -16,7 +16,7 @@ type ExistPagination = Exclude<PaginationType, boolean>;
 export interface TransferListBodyProps<RecordType> extends PartialTransferListProps<RecordType> {
   filteredItems: RecordType[];
   filteredRenderItems: RenderedItem<RecordType>[];
-  selectedKeys: string[];
+  selectedKeys: TransferKey[];
 }
 
 const parsePagination = (pagination?: ExistPagination) => {
@@ -73,11 +73,11 @@ const TransferListBody: React.ForwardRefRenderFunction<
     }
   }, [filteredRenderItems, mergedPagination, pageSize]);
 
-  const onClick = (item: RecordType) => {
-    onItemSelect?.(item.key, !selectedKeys.includes(item.key));
+  const onInternalClick = (item: KeyWiseTransferItem, e: React.MouseEvent<Element, MouseEvent>) => {
+    onItemSelect(item.key, !selectedKeys.includes(item.key), e);
   };
 
-  const onRemove = (item: RecordType) => {
+  const onRemove = (item: KeyWiseTransferItem) => {
     onItemRemove?.([item.key]);
   };
 
@@ -130,7 +130,7 @@ const TransferListBody: React.ForwardRefRenderFunction<
             renderedEl={renderedEl}
             prefixCls={prefixCls}
             showRemove={showRemove}
-            onClick={onClick}
+            onClick={onInternalClick}
             onRemove={onRemove}
             checked={selectedKeys.includes(item.key)}
             disabled={globalDisabled || item.disabled}

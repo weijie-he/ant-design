@@ -1,8 +1,14 @@
 import * as React from 'react';
-import rcWarning, { resetWarned } from 'rc-util/lib/warning';
+import rcWarning, { resetWarned as rcResetWarned } from 'rc-util/lib/warning';
 
-export { resetWarned };
 export function noop() {}
+
+let deprecatedWarnList: Record<string, string[]> | null = null;
+
+export function resetWarned() {
+  deprecatedWarnList = null;
+  rcResetWarned();
+}
 
 type Warning = (valid: boolean, component: string, message?: string) => void;
 
@@ -35,7 +41,12 @@ type TypeWarning = BaseTypeWarning & {
 };
 
 export interface WarningContextProps {
-  deprecated?: boolean;
+  /**
+   * @descCN 设置警告等级，设置 `false` 时会将废弃相关信息聚合为单条信息。
+   * @descEN Set the warning level. When set to `false`, discard related information will be aggregated into a single message.
+   * @since 5.10.0
+   */
+  strict?: boolean;
 }
 
 export const WarningContext = React.createContext<WarningContextProps>({});
@@ -47,12 +58,33 @@ export const WarningContext = React.createContext<WarningContextProps>({});
  */
 export const devUseWarning: (component: string) => TypeWarning =
   process.env.NODE_ENV !== 'production'
-    ? (component: string) => {
-        const { deprecated } = React.useContext(WarningContext);
+    ? (component) => {
+        const { strict } = React.useContext(WarningContext);
 
         const typeWarning: TypeWarning = (valid, type, message) => {
-          if (deprecated !== false || type !== 'deprecated') {
-            warning(valid, component, message);
+          if (!valid) {
+            if (strict === false && type === 'deprecated') {
+              const existWarning = deprecatedWarnList;
+
+              if (!deprecatedWarnList) {
+                deprecatedWarnList = {};
+              }
+
+              deprecatedWarnList[component] = deprecatedWarnList[component] || [];
+              if (!deprecatedWarnList[component].includes(message || '')) {
+                deprecatedWarnList[component].push(message || '');
+              }
+
+              // Warning for the first time
+              if (!existWarning) {
+                console.warn(
+                  '[antd] There exists deprecated usage in your code:',
+                  deprecatedWarnList,
+                );
+              }
+            } else {
+              warning(valid, component, message);
+            }
           }
         };
 

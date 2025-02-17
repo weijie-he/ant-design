@@ -8,20 +8,25 @@ import InfoCircleFilled from '@ant-design/icons/InfoCircleFilled';
 import classNames from 'classnames';
 import CSSMotion from 'rc-motion';
 import pickAttrs from 'rc-util/lib/pickAttrs';
+import { composeRef } from 'rc-util/lib/ref';
 
+import type { ClosableType } from '../_util/hooks/useClosable';
 import { replaceElement } from '../_util/reactNode';
 import { devUseWarning } from '../_util/warning';
-import { ConfigContext } from '../config-provider';
-// CSSINJS
+import { useComponentConfig } from '../config-provider/context';
 import useStyle from './style';
+
+export interface AlertRef {
+  nativeElement: HTMLDivElement;
+}
 
 export interface AlertProps {
   /** Type of Alert styles, options:`success`, `info`, `warning`, `error` */
   type?: 'success' | 'info' | 'warning' | 'error';
   /** Whether Alert can be closed */
-  closable?: boolean;
+  closable?: ClosableType;
   /**
-   * @deprecated please use `closeIcon` instead.
+   * @deprecated please use `closable.closeIcon` instead.
    * Close text to show
    */
   closeText?: React.ReactNode;
@@ -43,12 +48,13 @@ export interface AlertProps {
   rootClassName?: string;
   banner?: boolean;
   icon?: React.ReactNode;
-  /** Custom closeIcon */
-  closeIcon?: boolean | React.ReactNode;
+  closeIcon?: React.ReactNode;
   action?: React.ReactNode;
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+
+  id?: string;
 }
 
 const iconMapFilled = {
@@ -70,33 +76,45 @@ const IconNode: React.FC<IconNodeProps> = (props) => {
   const iconType = iconMapFilled[type!] || null;
   if (icon) {
     return replaceElement(icon, <span className={`${prefixCls}-icon`}>{icon}</span>, () => ({
-      className: classNames(`${prefixCls}-icon`, {
-        [(icon as ReactElement).props.className]: (icon as ReactElement).props.className,
-      }),
+      className: classNames(
+        `${prefixCls}-icon`,
+        (
+          icon as ReactElement<{
+            className?: string;
+          }>
+        ).props.className,
+      ),
     })) as ReactElement;
   }
   return React.createElement(iconType, { className: `${prefixCls}-icon` });
 };
 
-interface CloseIconProps {
+type CloseIconProps = {
   isClosable: boolean;
   prefixCls: AlertProps['prefixCls'];
   closeIcon: AlertProps['closeIcon'];
   handleClose: AlertProps['onClose'];
-}
+  ariaProps: React.AriaAttributes;
+};
 
-const CloseIcon: React.FC<CloseIconProps> = (props) => {
-  const { isClosable, prefixCls, closeIcon, handleClose } = props;
+const CloseIconNode: React.FC<CloseIconProps> = (props) => {
+  const { isClosable, prefixCls, closeIcon, handleClose, ariaProps } = props;
   const mergedCloseIcon =
     closeIcon === true || closeIcon === undefined ? <CloseOutlined /> : closeIcon;
   return isClosable ? (
-    <button type="button" onClick={handleClose} className={`${prefixCls}-close-icon`} tabIndex={0}>
+    <button
+      type="button"
+      onClick={handleClose}
+      className={`${prefixCls}-close-icon`}
+      tabIndex={0}
+      {...ariaProps}
+    >
       {mergedCloseIcon}
     </button>
   ) : null;
 };
 
-const Alert: React.FC<AlertProps> = (props) => {
+const Alert = React.forwardRef<AlertRef, AlertProps>((props, ref) => {
   const {
     description,
     prefixCls: customizePrefixCls,
@@ -114,6 +132,7 @@ const Alert: React.FC<AlertProps> = (props) => {
     closeText,
     closeIcon,
     action,
+    id,
     ...otherProps
   } = props;
 
@@ -121,13 +140,26 @@ const Alert: React.FC<AlertProps> = (props) => {
 
   if (process.env.NODE_ENV !== 'production') {
     const warning = devUseWarning('Alert');
-    warning.deprecated(!closeText, 'closeText', 'closeIcon');
+    warning.deprecated(!closeText, 'closeText', 'closable.closeIcon');
   }
 
-  const ref = React.useRef<HTMLDivElement>(null);
-  const { getPrefixCls, direction, alert } = React.useContext(ConfigContext);
+  const internalRef = React.useRef<HTMLDivElement>(null);
+
+  React.useImperativeHandle(ref, () => ({
+    nativeElement: internalRef.current!,
+  }));
+
+  const {
+    getPrefixCls,
+    direction,
+    closable: contextClosable,
+    closeIcon: contextCloseIcon,
+    className: contextClassName,
+    style: contextStyle,
+  } = useComponentConfig('alert');
   const prefixCls = getPrefixCls('alert', customizePrefixCls);
-  const [wrapSSR, hashId] = useStyle(prefixCls);
+
+  const [wrapCSSVar, hashId, cssVarCls] = useStyle(prefixCls);
 
   const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
     setClosed(true);
@@ -143,7 +175,8 @@ const Alert: React.FC<AlertProps> = (props) => {
   }, [props.type, banner]);
 
   // closeable when closeText or closeIcon is assigned
-  const isClosable = React.useMemo(() => {
+  const isClosable = React.useMemo<boolean>(() => {
+    if (typeof closable === 'object' && closable.closeIcon) return true;
     if (closeText) {
       return true;
     }
@@ -151,8 +184,12 @@ const Alert: React.FC<AlertProps> = (props) => {
       return closable;
     }
     // should be true when closeIcon is 0 or ''
-    return closeIcon !== false && closeIcon !== null && closeIcon !== undefined;
-  }, [closeText, closeIcon, closable]);
+    if (closeIcon !== false && closeIcon !== null && closeIcon !== undefined) {
+      return true;
+    }
+
+    return !!contextClosable;
+  }, [closeText, closeIcon, closable, contextClosable]);
 
   // banner mode defaults to Icon
   const isShowIcon = banner && showIcon === undefined ? true : showIcon;
@@ -166,15 +203,41 @@ const Alert: React.FC<AlertProps> = (props) => {
       [`${prefixCls}-banner`]: !!banner,
       [`${prefixCls}-rtl`]: direction === 'rtl',
     },
-    alert?.className,
+    contextClassName,
     className,
     rootClassName,
+    cssVarCls,
     hashId,
   );
 
   const restProps = pickAttrs(otherProps, { aria: true, data: true });
 
-  return wrapSSR(
+  const mergedCloseIcon = React.useMemo(() => {
+    if (typeof closable === 'object' && closable.closeIcon) {
+      return closable.closeIcon;
+    }
+    if (closeText) {
+      return closeText;
+    }
+    if (closeIcon !== undefined) {
+      return closeIcon;
+    }
+    if (typeof contextClosable === 'object' && contextClosable.closeIcon) {
+      return contextClosable.closeIcon;
+    }
+    return contextCloseIcon;
+  }, [closeIcon, closable, closeText, contextCloseIcon]);
+
+  const mergedAriaProps = React.useMemo<React.AriaAttributes>(() => {
+    const merged = closable ?? contextClosable;
+    if (typeof merged === 'object') {
+      const { closeIcon: _, ...ariaProps } = merged;
+      return ariaProps;
+    }
+    return {};
+  }, [closable, contextClosable]);
+
+  return wrapCSSVar(
     <CSSMotion
       visible={!closed}
       motionName={`${prefixCls}-motion`}
@@ -183,12 +246,13 @@ const Alert: React.FC<AlertProps> = (props) => {
       onLeaveStart={(node) => ({ maxHeight: node.offsetHeight })}
       onLeaveEnd={afterClose}
     >
-      {({ className: motionClassName, style: motionStyle }) => (
+      {({ className: motionClassName, style: motionStyle }, setRef) => (
         <div
-          ref={ref}
+          id={id}
+          ref={composeRef(internalRef, setRef)}
           data-show={!closed}
           className={classNames(alertCls, motionClassName)}
-          style={{ ...alert?.style, ...style, ...motionStyle }}
+          style={{ ...contextStyle, ...style, ...motionStyle }}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onClick={onClick}
@@ -208,17 +272,18 @@ const Alert: React.FC<AlertProps> = (props) => {
             {description ? <div className={`${prefixCls}-description`}>{description}</div> : null}
           </div>
           {action ? <div className={`${prefixCls}-action`}>{action}</div> : null}
-          <CloseIcon
+          <CloseIconNode
             isClosable={isClosable}
             prefixCls={prefixCls}
-            closeIcon={closeText || closeIcon}
+            closeIcon={mergedCloseIcon}
             handleClose={handleClose}
+            ariaProps={mergedAriaProps}
           />
         </div>
       )}
     </CSSMotion>,
   );
-};
+});
 
 if (process.env.NODE_ENV !== 'production') {
   Alert.displayName = 'Alert';
